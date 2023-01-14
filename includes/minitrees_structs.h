@@ -24,7 +24,6 @@ typedef struct s_btree
 	struct s_btree	*l;
 }					t_btree;
 
-
 typedef struct s_data
 {
 	int				prev_pipes;

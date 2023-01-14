@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rpn_algo.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 03:53:52 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/13 23:47:33 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/14 17:32:45 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ t_rpn	*generate_rpn(t_rpn *rpn, char *str)
 		while (rpn->s[i] && !rpn_isspecial(rpn, i))
 			i++;
 		if (i != j)
-			ft_lstadd_back(&rpn->out, ft_lstnew_rpn(invert_quotes(ft_strtrim(ft_strndup(str + j, i - j), rpn->blanks)), 0));
+			ft_lstadd_back(&rpn->out, ft_lstnew_rpn(ft_strtrim(ft_strndup(str + j, i - j), rpn->blanks), 0));
 		if (i != j && rpn->check && is_a_closed_parenthesis(rpn->check->content))
 		{
 			rpn->current = ft_lstlast(rpn->out);

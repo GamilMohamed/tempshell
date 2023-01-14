@@ -52,7 +52,9 @@ void	add_right(t_btree **tree, t_btree *right_son);
 void	free_tree(t_btree *t);
 
 // exec.c
-int	exec_command(t_btree *tree, int infile, int outfile, char **ev);
-int	exec_tree(t_btree *tree, int infile, int outfile, char **ev);
+// int	exec_command(t_btree *tree, int infile, int outfile, char **ev);
+int	exec_command(t_btree *tree, int infile, int outfile);
+int	exec_tree(t_btree *tree, int infile, int outfile);
+// int	exec_tree(t_btree *tree, int infile, int outfile, char **ev);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 14:22:52 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/14 18:11:08 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,14 @@ int	exec(char **env, t_data *data)
 	// char	*prompt;
 	t_btree	*tree;
 
-	fd = open("history.txt", O_RDWR | O_CREAT | O_APPEND, 0644);
 	// prompt = "\001\e[0;37m\002:\001\e[0m\002";
 	while (1)
 	{
 		str = readline("MINISHELLL:");
-		add_history(str);
+		fd = open("history.txt", O_RDWR | O_CREAT | O_APPEND, 0644);
 		ft_putendl_fd(str, fd);
+		add_history(str);
+		close(fd);
 		if (!str)
 			break ;
 		if (checkquotes(str) || checksyntax(str))
@@ -39,14 +40,13 @@ int	exec(char **env, t_data *data)
 		tree = get_tree(str, env, data);
 		ft_free((void **)& str);
 		if (tree)
-			exec_tree(tree, STDIN_FILENO, STDOUT_FILENO, NULL);
+			print_tree(tree, 2);
 		if (tree)
+			exec_tree(tree, STDIN_FILENO, STDOUT_FILENO);
 			free_tree(tree);
-			// print_tree(tree, 2);
 		// ft_printf("FIN EXECUTION PREMIeRE CMD\n");
 		// ft_infix(tree);
 	}
-	close(fd);
 	ft_free((void **)& str);
 	ft_freetab(data->path);
 	return (0);

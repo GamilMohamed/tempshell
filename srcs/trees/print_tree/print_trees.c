@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_trees.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:54:00 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/13 03:46:33 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/13 02:16:09 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,14 @@ void	print_print(t_queue *to_print, int node_size)
 			to_print = to_print->next;
 		}
 		else
-			printf("%.*s", node_size, "              ");
+			printf("%.*s", node_size, "            ");
 		printf("%*s", node_size * (int)pow(2, depth - local_depth), "");
-		if (to_print->id >= (int)pow(2, local_depth) && id_to_print < (int)pow(2, local_depth))
+		id_to_print++;
+		if (to_print && to_print->id >= pow(2, local_depth + 1))
 		{
-			id_to_print = (int)pow(2, local_depth);
+			id_to_print = pow(2, local_depth + 1);
 			printf("\n");
 		}
-		else
-			id_to_print++;
-
 	}
 	printf("\n");
 }
