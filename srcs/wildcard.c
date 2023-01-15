@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 18:59:25 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 11:41:01 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/15 04:06:42 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char	*ft_wildcard(char *wildcards)
 	struct dirent	*entry;
 
 	temp = ft_calloc(1, 1);
-	dir = opendir("/mnt/nfs/homes/mgamil/Documents/cursus/cestterrible23");
+	dir = opendir(builtin_pwd(NULL));
 	entry = readdir(dir);
 	entry = readdir(dir);
 	entry = readdir(dir);

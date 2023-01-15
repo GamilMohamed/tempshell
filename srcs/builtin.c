@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/04 00:26:48 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/14 21:24:49 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ static int	builtin_echo(char *s, char **env)
 	return (1);
 }
 
-static int	builtin_pwd(char *s)
+char	*builtin_pwd(char *s)
 {
 	char	*str;
 	char	*temp;
@@ -108,13 +108,13 @@ static int	builtin_pwd(char *s)
 			free(str);
 			str = ft_calloc(i + 1, 1);
 			if (!str)
-				return (1);
+				return (NULL);
 		}
 		i++;
 	}
-	printf("%s\n", str);
-	free(str);
-	return (1);
+	// printf("%s\n", 	str);
+	// free(str);
+	return (str);
 }
 
 int	ft_builtin(char *s, char **env)
@@ -132,6 +132,8 @@ int	ft_builtin(char *s, char **env)
 		return (builtin_env(temp, env), free(temp), 1);
 	if (!ft_strcmp(temp, "exit"))
 		return (free(temp), free(s), exit(1), 1);
+	if (!ft_strncmp(temp, "cd", 2))
+		return (ft_cd(temp), 1);
 	free(temp);
 	return (0);
 }

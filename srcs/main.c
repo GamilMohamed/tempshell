@@ -3,33 +3,63 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 18:11:08 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/15 05:24:01 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	prompt(t_data *data)
+{
+	char		*str;
+	char		**tab;
+	int			count;
+	static char	*reset;
+
+	reset = "\001\033[0m\002:";
+	str = builtin_pwd(NULL);
+	tab = ft_split(str, '/');
+	count = ft_countdelim(str, '/');
+	// ft_printtab(tab);
+	printf("RED=%slol%s\n", ft_strdup(RED), ft_strdup(reset));
+	if (data->status)
+		data->prompt = ft_strdup(RED);
+	else
+		data->prompt = ft_strdup(GREEN);
+	printf("data->prompt=%s\n", data->prompt);
+	if (count)
+		data->prompt = ft_realloc(data->prompt, tab[count - 1]);
+	else
+		data->prompt = ft_realloc(data->prompt, str);
+	data->prompt = ft_realloc(data->prompt, reset);
+	ft_free((void **)&str);
+	ft_freetab(tab);
+}
+
 int	exec(char **env, t_data *data)
 {
 	char	*str;
 	int		fd;
-	int i = 0;
-	// char	*prompt;
 	t_btree	*tree;
 
-	// prompt = "\001\e[0;37m\002:\001\e[0m\002";
 	while (1)
 	{
-		str = readline("MINISHELLL:");
+		prompt(data);
+		str = readline(data->prompt);
 		fd = open("history.txt", O_RDWR | O_CREAT | O_APPEND, 0644);
 		ft_putendl_fd(str, fd);
 		add_history(str);
 		close(fd);
 		if (!str)
 			break ;
+		if (!ft_strcmp(str, "echo $?"))
+		{
+			printf("%i\n", data->status);
+			continue ;
+		}
 		if (checkquotes(str) || checksyntax(str))
 			continue ;
 		str = ft_expand(str, env);
@@ -38,20 +68,19 @@ int	exec(char **env, t_data *data)
 		if (!str || !*str || !ft_strcmp(str, "exit"))
 			break ;
 		tree = get_tree(str, env, data);
-		ft_free((void **)& str);
+		ft_free((void **)&str);
 		if (tree)
 			print_tree(tree, 2);
 		if (tree)
 			exec_tree(tree, STDIN_FILENO, STDOUT_FILENO);
-			free_tree(tree);
+		free_tree(tree);
 		// ft_printf("FIN EXECUTION PREMIeRE CMD\n");
 		// ft_infix(tree);
 	}
-	ft_free((void **)& str);
+	ft_free((void **)&str);
 	ft_freetab(data->path);
 	return (0);
 }
-
 
 int	main(int ac, char **av, char **env)
 {
@@ -61,6 +90,7 @@ int	main(int ac, char **av, char **env)
 	data.env = env;
 	data.prev_pipes = -1;
 	exec(env, &data);
+	exit(data.status);
 }
 
 /*
@@ -118,7 +148,6 @@ wc		0		wc		{"wc", "-w", NULL}
 
 */
 
-
 /*
  
 (	(	(a	|	b)	&&	c)	||	d)	|	(e	&&	f)
@@ -138,17 +167,16 @@ a		b									a		b
 
 
 
-*/	
+*/
 
 /*
 
 tab[i]
-si i = 0 et que c pas une redirection === commande
+si		i = 0 et que c pas une redirection === commande
 si i > 0 et que c pas une redirection === argument
 sinon redirection
 
 */
-
 
 /*
 
@@ -176,8 +204,8 @@ nbcmd=5
 4|6|5
 5|6|4
 4|6|5
-append	history.txt  includes  libft.a	    liblkriefft.a  minishell  out   out2  out4	   outside  srcs
-gab	ignore.txt   libft     liblkriefft  Makefile	   objs       out1  out3  outfile  pipex
+append	history.txt  includes  libft.a			liblkriefft.a  minishell  out   out2  out4	   outside  srcs
+gab	ignore.txt   libft     liblkriefft  Makefile		objs       out1  out3  outfile  pipex
 
 
 

@@ -6,7 +6,7 @@ DIR_SRCS		=	srcs
 
 DIR_OBJS		=	objs
 
-SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c \
+SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c cd.c \
 				rpn/rpn_algo.c \
 				rpn/rpn_basics.c \
 				rpn/rpn_pop_utils.c \

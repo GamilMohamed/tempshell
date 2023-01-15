@@ -32,6 +32,8 @@ typedef struct s_data
 	char			**path;
 	int				fd[2];
 	int				status;
+
+	char			*prompt;
 }					t_data;
 
 typedef struct s_queue

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/14 18:12:17 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/15 04:05:58 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ char	*checkstring(t_cmd *cmd, char *str)
 	t_rr	*tmp;
 
 	tab = ft_split(str, ' ');
-	ft_printtab(tab);
+	// ft_printtab(tab);
 	tmp = cmd->redi;
 	cmd->flags = ft_calloc(1, 1);
 	count = 0;
@@ -158,13 +158,14 @@ char	*checkstring(t_cmd *cmd, char *str)
 	{
 		if (!isaredirection(tab[i]) && !count)
 		{
-			ft_printf("%g%s%0 ", tab[i], count++); // COMMAND
+			// ft_printf("%g%s%0 ", tab[i], count++); // COMMAND
+			count++;
 			cmd->cmd = ft_strdup(tab[i]);
 			cmd->flags = ft_strjoin_gnl(cmd->flags, tab[i]);
 		}
 		else if (!isaredirection(tab[i]))
 		{
-			ft_printf("%y%s%0 ", tab[i]); // FLAG
+			// ft_printf("%y%s%0 ", tab[i]); // FLAG
 			cmd->flags = ft_strjoin_gnl(cmd->flags, " ");
 			if (ft_strchr(tab[i], '*'))
 				cmd->flags = ft_strjoin_gnl(cmd->flags, ft_wildcard(tab[i]));
@@ -173,17 +174,17 @@ char	*checkstring(t_cmd *cmd, char *str)
 		}
 		else
 		{
-			ft_printf("%b%s%0 %b%s%0 ", tab[i], tab[i + 1]); // REDIRECTION
+			// ft_printf("%b%s%0 %b%s%0 ", tab[i], tab[i + 1]); // REDIRECTION
 			ft_lstadd_back_rr(&cmd->redi, ft_lstnewrr(ft_strdup(tab[i + 1]),
 						isaredirection(tab[i])));
 			i++;
 		}
 	}
 	ft_freetab(tab);
-	ft_printf("\n");
+	// ft_printf("\n");
 	ft_printf("{%s}\n", cmd->flags);
 	// cmd->flags = invert_quotes(cmd -> flags);
-	ft_printf("{%s}\n", cmd->flags);
+	// ft_printf("{%s}\n", cmd->flags);
 	// ft_printlist(cmd->redi);
 	return (NULL);
 }
@@ -197,7 +198,7 @@ int	exec_command(t_btree *tree, int infile, int outfile)
 	int		status;
 
 	cmd = ft_calloc(sizeof(t_cmd), 1);
-	printf("[%s]\n", (char *)tree->node);
+	// printf("[%s]\n", (char *)tree->node);
 	tab = ft_split(tree->node, '|');
 	nbcmd = ft_countdelim(tree->node, '|');
 	i = -1;
@@ -233,7 +234,10 @@ int	exec_command(t_btree *tree, int infile, int outfile)
 	while (++i < nbcmd)
 		waitpid(tree->data->pid[i], &status, 0);
 	if (WIFEXITED(status))
-		tree->data->status = WIFEXITED(status);
+	{
+		tree->data->status = WEXITSTATUS(status);
+		// printf("Child exited with status = %i\n", tree->data->status);
+	}
 	ft_freetab(tab);
 	return (0);
 }
@@ -244,8 +248,8 @@ int	exec_tree(t_btree *tree, int infile, int outfile)
 	{
 		tree->data->prev_pipes = -1;
 		exec_tree(tree->l, infile, outfile);
-		ft_printf("status=%i\n", tree->data->status);
-			if (!tree->data->status)
+		// ft_printf("status=%i\n", tree->data->status);
+			if (tree->data->status)
 				return (exec_tree(tree->r, infile, outfile));
 		return (0);
 	}
@@ -253,8 +257,8 @@ int	exec_tree(t_btree *tree, int infile, int outfile)
 	{
 		tree->data->prev_pipes = -1;
 		exec_tree(tree->l, infile, outfile);
-		ft_printf("status=%i\n", tree->data->status);
-			if (tree->data->status)
+		// ft_printf("status=%i\n", tree->data->status);
+			if (!tree->data->status)
 				return (exec_tree(tree->r, infile, outfile));
 		return (1);
 	}
