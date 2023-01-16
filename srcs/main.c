@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/15 05:24:01 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/15 21:30:15 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,19 @@ void	prompt(t_data *data)
 	char		*str;
 	char		**tab;
 	int			count;
-	static char	*reset;
-
-	reset = "\001\033[0m\002:";
 	str = builtin_pwd(NULL);
 	tab = ft_split(str, '/');
 	count = ft_countdelim(str, '/');
-	// ft_printtab(tab);
-	printf("RED=%slol%s\n", ft_strdup(RED), ft_strdup(reset));
 	if (data->status)
 		data->prompt = ft_strdup(RED);
 	else
 		data->prompt = ft_strdup(GREEN);
-	printf("data->prompt=%s\n", data->prompt);
 	if (count)
 		data->prompt = ft_realloc(data->prompt, tab[count - 1]);
 	else
 		data->prompt = ft_realloc(data->prompt, str);
-	data->prompt = ft_realloc(data->prompt, reset);
-	ft_free((void **)&str);
+	data->prompt = ft_realloc(data->prompt, "\001\033[0m\002:");
+	ft_free((void **)& 	str);
 	ft_freetab(tab);
 }
 
@@ -49,6 +43,7 @@ int	exec(char **env, t_data *data)
 	{
 		prompt(data);
 		str = readline(data->prompt);
+		ft_free((void **)& data->prompt);
 		fd = open("history.txt", O_RDWR | O_CREAT | O_APPEND, 0644);
 		ft_putendl_fd(str, fd);
 		add_history(str);
@@ -63,21 +58,24 @@ int	exec(char **env, t_data *data)
 		if (checkquotes(str) || checksyntax(str))
 			continue ;
 		str = ft_expand(str, env);
-		if (ft_builtin(str, env))
+		if (ft_builtin(str, env, data))
 			continue ;
 		if (!str || !*str || !ft_strcmp(str, "exit"))
 			break ;
 		tree = get_tree(str, env, data);
 		ft_free((void **)&str);
 		if (tree)
+		{
 			print_tree(tree, 2);
-		if (tree)
 			exec_tree(tree, STDIN_FILENO, STDOUT_FILENO);
-		free_tree(tree);
+			free_tree(tree);
+		}
 		// ft_printf("FIN EXECUTION PREMIeRE CMD\n");
 		// ft_infix(tree);
 	}
-	ft_free((void **)&str);
+	ft_free((void **)& data->prompt);
+	rl_clear_history();
+	ft_free((void **)& str);
 	ft_freetab(data->path);
 	return (0);
 }
@@ -85,7 +83,8 @@ int	exec(char **env, t_data *data)
 int	main(int ac, char **av, char **env)
 {
 	t_data	data;
-
+	
+	signal(SIGQUIT, SIG_IGN);
 	ft_memset(&data, 0, sizeof(t_data));
 	data.env = env;
 	data.prev_pipes = -1;

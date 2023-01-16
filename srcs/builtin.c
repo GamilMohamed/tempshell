@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 21:24:49 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/15 18:38:52 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,18 +112,18 @@ char	*builtin_pwd(char *s)
 		}
 		i++;
 	}
-	// printf("%s\n", 	str);
-	// free(str);
+	if (s)
+		printf("%s\n", 	str);
 	return (str);
 }
 
-int	ft_builtin(char *s, char **env)
+int	ft_builtin(char *s, char **env, t_data *data)
 {
 	char *temp;
 
 	temp = ft_strtrim(s, " ");
 	if (!ft_strcmp(temp, "pwd"))
-		return (builtin_pwd(temp), free(temp), 1);
+		return (builtin_pwd("a"), free(temp), 1);
 	if (!ft_strncmp(temp, "echo", 4))
 		return (builtin_echo(temp, env), free(temp), 1);
 	// if (!ft_strcmp(temp, "echo"))
@@ -131,7 +131,7 @@ int	ft_builtin(char *s, char **env)
 	if (!ft_strcmp(temp, "env"))
 		return (builtin_env(temp, env), free(temp), 1);
 	if (!ft_strcmp(temp, "exit"))
-		return (free(temp), free(s), exit(1), 1);
+		return (free(temp), free(s), exit(data->status), 1);
 	if (!ft_strncmp(temp, "cd", 2))
 		return (ft_cd(temp), 1);
 	free(temp);

@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 14:38:28 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 11:49:05 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/15 20:44:08 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,12 @@
 
 void	ft_freetab(char **tab)
 {
-	int	i;
+	int		i;
 
-	i = -1;
-	if (tab)
-	{
-		while (tab[++i] != NULL)
-			free(tab[i]);
-		free(tab);
-	}
+	i = 0;
+	if (!tab)
+		return ;
+	while (tab[i])
+		free(tab[i++]);
+	free(tab);
 }

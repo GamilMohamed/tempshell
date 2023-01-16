@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 20:35:29 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 20:42:33 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/15 21:14:48 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,6 @@
 void	ft_cd(char *str)
 {
 	char **tab = ft_split(str, ' ');
-	chdir(tab[1]);
+	if (tab[1])
+		chdir(tab[1]);
 }
