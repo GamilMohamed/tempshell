@@ -15,7 +15,11 @@ SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c cd.c \
 				trees/trees.c \
 				trees/print_tree/print_trees.c \
 				trees/print_tree/queues.c \
-				exec/exec.c exec/utils.c 
+				exec/exec.c exec/utils.c \
+				builtins/cd.c  \
+				builtins/env_utils.c \
+				builtins/export.c \
+				builtins/unset.c 
 
 
 OBJS_NAMES		=	${SRCS_NAMES:.c=.o}
@@ -26,11 +30,13 @@ SRCS			=	$(addprefix $(DIR_SRCS)/,$(SRCS_NAMES))
 
 OBJS			=	$(addprefix $(DIR_OBJS)/,$(OBJS_NAMES))
 
-HEAD			=	-Iincludes -Ilibft/includes -Ilibkriefft
+INC				=	-Iincludes -Ilibft/includes -Iliblkriefft
 
-LIB				=	-lreadline -lm
+LIB				=	-lreadline -lm -Llibft -lft -Lliblkriefft -llkriefft
 
 CC				=	cc
+
+CDFLAGS 		= -MMD -MP
 
 CFLAGS			=	-g3 -Wall -Werror -Wextra
 
@@ -38,21 +44,20 @@ MAKEFLAGS		=	--no-print-directory
 
 all:	${NAME}
 
-$(NAME): $(OBJS)
+$(NAME): $(DIR_OBJS) $(OBJS) 
 	make -C libft
 	make -C liblkriefft
-	mv libft/libft.a .
-	mv liblkriefft/liblkriefft.a .
-	$(CC) -g3 $(OBJS) ${LIBFT} ${HEAD} $(LIB) -o $(NAME)
+	$(CC) -g3 ${INC} $(OBJS) $(LIB) -o $(NAME)
 	@echo "\033[31;5mminishell\033[0m"
 
-$(DIR_OBJS)/%.o: $(DIR_SRCS)/%.c | $(DIR_OBJS)
-	$(CC) -g3 -MMD -MP -c $< -o $@ $(HEAD)
+$(OBJS) : $(DIR_OBJS)/%.o : $(DIR_SRCS)/%.c
+	$(CC) -g3 $(CDFLAGS) $(INC) -c $< -o $@ 
 
 $(DIR_OBJS):
 	mkdir -p $(DIR_OBJS)
 	mkdir -p objs/trees/print_tree
 	mkdir -p objs/rpn
+	mkdir -p objs/builtins
 	mkdir -p objs/exec
 
 clean:
