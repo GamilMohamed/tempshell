@@ -11,7 +11,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-# define MALLOC_FAILED 0b00000000000000000000001
+# define FAILED_MALLOC 0b00000000000000000000001
 
 # define NULL_ERROR 0b10000000000000000000000
 typedef struct s_data t_data;
@@ -30,6 +30,7 @@ typedef struct s_data
 	pid_t			pid[1024];
 	char			**env;
 	char			**path;
+	char			**split;
 	int				fd[2];
 	int				status;
 

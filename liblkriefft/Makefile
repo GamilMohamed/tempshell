@@ -31,6 +31,7 @@ SRCS		=	ft_put_fd/ft_putchar_fd.c \
 				utils/ft_atoi.c \
 				utils/ft_bzero.c \
 				utils/ft_calloc.c \
+				utils/ft_free_tab.c \
 				utils/ft_itoa.c \
 				utils/ft_split.c \
 				lst/ft_lstadd_back.c \

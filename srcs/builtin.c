@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/15 18:38:52 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/17 02:01:26 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,27 +113,82 @@ char	*builtin_pwd(char *s)
 		i++;
 	}
 	if (s)
-		printf("%s\n", 	str);
+		printf("%s\n", str);
 	return (str);
 }
 
-int	ft_builtin(char *s, char **env, t_data *data)
+static int	builtin_cd(char *str, char ***addr_ev)
+{
+	int		success;
+	char	**tab;
+
+	success = -1;
+	if (str)
+	{
+		tab = ft_split(str + 3, ' ');
+		if (!tab)
+			return (ft_puterror(FAILED_MALLOC), -1);
+		success = ft_cd(tab, addr_ev);
+		ft_free_tab(tab, -1);
+	}
+	return (success);
+}
+
+static int	builtin_export(char *str, char ***addr_ev)
+{
+	int		success;
+	char	**tab;
+
+	success = -1;
+	if (str)
+	{
+		tab = ft_split(str + 7, ' ');
+		if (!tab)
+			return (ft_puterror(FAILED_MALLOC), -1);
+		success = ft_export(tab, addr_ev);
+		ft_free_tab(tab, -1);
+	}
+	return (success);
+}
+
+static int	builtin_unset(char *str, char ***addr_ev)
+{
+	int		success;
+	char	**tab;
+
+	success = -1;
+	if (str)
+	{
+		tab = ft_split(str + 6, ' ');
+		if (!tab)
+			return (ft_puterror(FAILED_MALLOC), -1);
+		success = ft_unset(tab, addr_ev);
+		ft_free_tab(tab, -1);
+	}
+	return (success);
+}
+
+int	ft_builtin(char *s, char **env, char ***addr_env)
 {
 	char *temp;
 
 	temp = ft_strtrim(s, " ");
 	if (!ft_strcmp(temp, "pwd"))
-		return (builtin_pwd("a"), free(temp), 1);
+		return (builtin_pwd(temp), free(temp), 1);
 	if (!ft_strncmp(temp, "echo", 4))
 		return (builtin_echo(temp, env), free(temp), 1);
 	// if (!ft_strcmp(temp, "echo"))
 		// return (ft_printf("\n"));
 	if (!ft_strcmp(temp, "env"))
 		return (builtin_env(temp, env), free(temp), 1);
+	if (!ft_strncmp(temp, "cd ", 3) || !ft_strcmp(temp, "cd"))
+		return (builtin_cd(temp, addr_env), free(temp), 1);
+	if (!ft_strncmp(temp, "export ", 7) || !ft_strcmp(temp, "export"))
+		return (builtin_export(temp, addr_env), free(temp), 1);
+	if (!ft_strncmp(temp, "unset ", 6))
+		return (builtin_unset(temp, addr_env), free(temp), 1);
 	if (!ft_strcmp(temp, "exit"))
-		return (free(temp), free(s), exit(data->status), 1);
-	if (!ft_strncmp(temp, "cd", 2))
-		return (ft_cd(temp), 1);
+		return (free(temp), free(s), exit(1), 1);
 	free(temp);
 	return (0);
 }

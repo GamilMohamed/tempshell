@@ -1,20 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/14 20:35:29 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/17 01:54:40 by mgamil           ###   ########.fr       */
+/*   Created: 2023/01/15 17:47:54 by lkrief            #+#    #+#             */
+/*   Updated: 2023/01/17 00:44:07 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void	ft_cd(char *str)
-// {
-// 	char **tab = ft_split(str, ' ');
-// 	if (tab[1])
-// 		chdir(tab[1]);
-// }
+int	ft_unset(char **tab, char ***addr_ev)
+{
+	int	n;
+
+	while (tab && *tab)
+	{
+		n = ft_ev_getvarindex(*tab, *addr_ev);
+		if (n >= 0)
+			*addr_ev = regenerate_ev(ft_tablen(*addr_ev) - 1, n, *addr_ev);
+		tab++;
+	}
+	return (1);
+}

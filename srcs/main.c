@@ -6,11 +6,18 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/15 21:30:15 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/17 02:02:43 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	*ft_puterror(int flag)
+{
+	if (flag & FAILED_MALLOC)
+		ft_putstr_fd("Malloc failed\n", STDERR_FILENO);
+	return (NULL);
+}
 
 void	prompt(t_data *data)
 {
@@ -39,6 +46,7 @@ int	exec(char **env, t_data *data)
 	int		fd;
 	t_btree	*tree;
 
+	env = ft_copy_tab(env);
 	while (1)
 	{
 		prompt(data);
@@ -58,7 +66,7 @@ int	exec(char **env, t_data *data)
 		if (checkquotes(str) || checksyntax(str))
 			continue ;
 		str = ft_expand(str, env);
-		if (ft_builtin(str, env, data))
+		if (ft_builtin(str, env, &env))
 			continue ;
 		if (!str || !*str || !ft_strcmp(str, "exit"))
 			break ;
@@ -77,12 +85,15 @@ int	exec(char **env, t_data *data)
 	rl_clear_history();
 	ft_free((void **)& str);
 	ft_freetab(data->path);
+	ft_freetab(env);
 	return (0);
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_data	data;
+	(void)ac;
+	(void)av;
 	
 	signal(SIGQUIT, SIG_IGN);
 	ft_memset(&data, 0, sizeof(t_data));

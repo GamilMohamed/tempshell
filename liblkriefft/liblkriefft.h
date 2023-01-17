@@ -27,6 +27,7 @@
 int		ft_atoi(const char *str);
 void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t count, size_t size);
+void	*ft_free_tab(char **tab, int n);
 int		ft_isalnum(int c);
 int		ft_isalpha(int c);
 int		ft_isascii(int c);
@@ -46,7 +47,7 @@ char	**ft_split(char const *s, char c);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strndup(const char *s1, int n);
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
-char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin_lkrief(char const *s1, char const *s2);
 size_t	ft_strlcat(char *restrict dst, const char *restrict src, size_t dstsiz);
 size_t	ft_strlcpy(char *restrict dst, const char *restrict src, size_t dstsiz);
 size_t	ft_strlen(const char *s);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 18:59:25 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/15 04:06:42 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/16 20:20:14 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,10 @@ char	*ft_wildcard(char *wildcards)
 	temp = ft_calloc(1, 1);
 	dir = opendir(builtin_pwd(NULL));
 	entry = readdir(dir);
-	entry = readdir(dir);
-	entry = readdir(dir);
 	while (entry)
 	{
+		while (!ft_strncmp(entry->d_name, ".", 1))
+			entry = readdir(dir);
 		if (check_wildcards(entry->d_name, wildcards))
 		{
 			temp = ft_strjoin_gnl(temp, entry->d_name);
