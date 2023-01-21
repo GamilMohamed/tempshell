@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/21 12:00:47 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/21 21:42:20 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,20 +157,23 @@ static int	builtin_unset(char *str, char ***addr_ev)
 
 int	ft_builtin(t_cmd *cmd, t_data *data)
 {
+	ft_printf("cmd->cmd={%s}\n", cmd->cmd);
+	if (!cmd->cmd)
+		return (0);
 	if (!ft_strcmp(cmd->cmd, "pwd"))
 		return (builtin_pwd(cmd->cmd), 1);
 	if (!ft_strncmp(cmd->cmd, "echo", 4))
-		return (builtin_echo(cmd->cmd, data->path), 1);
+		return (builtin_echo(cmd->cmd, data->env), 1);
 	// if (!ft_strcmp(cmd->cmd, "echo"))
 		// return (ft_printf("\n"));
 	if (!ft_strcmp(cmd->cmd, "env"))
-		return (builtin_env(cmd->cmd, data->path), 1);
+		return (builtin_env(cmd->cmd, data->env), 1);
 	if (!ft_strncmp(cmd->cmd, "cd ", 3) || !ft_strcmp(cmd->cmd, "cd"))
-		return (builtin_cd(cmd->cmd, &data->path), 1);
+		return (builtin_cd(cmd->cmd, &data->env), 1);
 	if (!ft_strncmp(cmd->cmd, "export ", 7) || !ft_strcmp(cmd->cmd, "export"))
-		return (builtin_export(cmd->cmd, &data->path), 1);
+		return (builtin_export(cmd->cmd, &data->env), 1);
 	if (!ft_strncmp(cmd->cmd, "unset ", 6))
-		return (builtin_unset(cmd->cmd, &data->path), 1);
+		return (builtin_unset(cmd->cmd, &data->env), 1);
 	// if (!ft_strcmp(cmd->cmd, "exit"))
 		// return (, exit(1), 1);
 	return (0);

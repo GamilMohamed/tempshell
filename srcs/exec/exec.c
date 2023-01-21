@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/21 12:32:13 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/21 21:42:59 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,70 @@ void	execute(t_data *data, t_cmd *cmd, int boolean)
 	data->status = 127;
 	ft_freetab(tab);
 }
+
+void	ft_errorcmd_bt(t_data *data, t_cmd *cmd, t_rr *node, char *str)
+{
+	// ft_freepostexec(cmd, data);
+	ft_free((void **)&cmd->flags);
+	ft_free((void **)&cmd->cmd);
+	// ft_freetab(data->path);
+	// ft_freetab(data->here_docs);
+	// ft_freetab(data->filename);
+	ft_freetab(data->split);
+	ft_freerr(node);
+	close(data->fd[0]);
+	close(data->fd[1]);
+	// ft_free((void **)&cmd);
+
+}
+
+int	error_fd_bt(t_rr *node, t_data *data, t_cmd *cmd, int index)
+{
+	if (errno == 13 && node->type != 4)
+		ft_printf("bash: %s: Permission denied\n", node->content);
+	else if (errno == 13 && node->type == 4)
+		ft_printf("bash: %s: Permission denied\n", data->filename[index]);
+	else if (node->type != 4)
+		ft_printf("bash: %s: No such file or directory\n", node->content);
+	else
+		ft_printf("bash: %s: No such file or directory\n",
+				data->filename[index]);
+	ft_errorcmd_bt(data, cmd, cmd->redi, "");
+	return (1);
+	// close(data->fd[1]);
+	// close(data->fd[0]);
+}
+
+
+int	openfiles_bt(t_rr *node, t_data *data, t_cmd *cmd, int index)
+{
+	int		fd;
+	t_rr	*head;
+
+	head = node;
+	while (node)
+	{
+		if (node->type == 1) // >
+			fd = open(node->content, O_TRUNC | O_WRONLY | O_CREAT, 0666);
+		else if (node->type == 2) // >>
+			fd = open(node->content, O_APPEND | O_WRONLY | O_CREAT, 0666);
+		else if (node->type == 3) // <
+			fd = open(node->content, O_RDONLY);
+		else if (node->type == 4) // <<
+			fd = open(data->filename[index], O_RDONLY);
+		if (fd == -1)
+			if (error_fd_bt(node, data, cmd, index))
+				return (1);
+		if (node->type > 2)
+			dupnclose(fd, STDIN_FILENO);
+		else if (node->type < 3)	
+			dupnclose(fd, STDOUT_FILENO);
+		node = node->next;
+		ft_printf("fd=%i\n", fd);
+	}
+	return (0);
+}
+
 
 void	openfiles(t_rr *node, t_data *data, t_cmd *cmd, int index)
 {
@@ -189,23 +253,41 @@ char	*checkstring(t_cmd *cmd, char *str)
 	return (NULL);
 }
 
-int	isbuiltin(char *str)
+int    matching(char *match)
 {
-	if (!ft_strcmp(str, "pwd"))
-		return (1);
-	return (0);
+    static const char    *matchs[7] = {
+        "cd", "echo", "exit", "export", "pwd", "unset", "env"
+    };
+    int                    i;
+
+    i = 0;
+    while (i < 7)
+    {
+        if (!ft_strcmp(matchs[i++], match))
+            return (1);
+    }
+    return (0);
 }
 
 int exec_builtin(t_cmd *cmd, t_data *data)
 {
 	int copyfd;
-	if (!isbuiltin(cmd-
->cmd))
+	if (!matching(cmd->cmd))
 		return (0);
 	copyfd = dup(STDOUT_FILENO);
-	openfiles(cmd->redi, data, cmd, 0);
+	// openfiles_bt(cmd->redi, data, cmd, 0);
+	if (openfiles_bt(cmd->redi, data, cmd, 0))
+	{
+		dup2(copyfd, STDOUT_FILENO);
+		close(copyfd);
+		return (1);
+	}
 	ft_builtin(cmd, data);
 	dup2(copyfd, STDOUT_FILENO);
+	ft_free((void **)& cmd->flags);
+	ft_free((void **)& cmd->cmd);
+	ft_freetab(data->split);
+	ft_freerr(cmd->redi);
 	close(data->fd[0]);
 	close(data->fd[1]);
 	close(copyfd);
@@ -231,10 +313,9 @@ int	exec_command(t_btree *tree, int infile, int outfile)
 	{
 		tree->data->split[i] = ft_spacestr(tree->data->split[i]);
 		checkstring(& cmd, tree->data->split[i]);
-		// checkbuiltin(& cmd, nb& cmd);
 		pipe(tree->data->fd);
 		if (nbcmd == 1 && exec_builtin(&cmd, tree->data))
-				break ;
+				return 0;
 		signal(SIGINT, SIG_IGN);
 		tree->data->pid[i] = fork();
 		if (tree->data->pid[i] == 0)
