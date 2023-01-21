@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 01:50:36 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 09:19:34 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/18 00:56:47 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,13 @@ int	ft_expandsize(char *s, char **env)
 				total++;
 				i++;
 			}
+			if (s[i] == '\0')
+					break ;
 			total++;
 			i++;
 		}
+		if (s[i] == '\0')
+			break ;
 		total++;
 		i++;
 	}
@@ -139,6 +143,8 @@ char	*ft_expand(char *s, char **env)
 			}
 			str[total++] = s[i++];
 		}
+		if (s[i] == '\0')
+			break ;
 		str[total++] = s[i++];
 	}
 	free(s);

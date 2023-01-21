@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 05:02:23 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/17 00:37:51 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/19 20:28:14 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ char	**ft_copy_tab(char **tab)
 	i = ft_tablen(tab);
 	new_tab = malloc(sizeof(*new_tab) * (i + 1));
 	if (!new_tab)
-		return (ft_puterror(FAILED_MALLOC));
+		return (ft_puterror(FAILED_MALLOC, NULL));
 	i = -1;
 	while (tab[++i])
 	{
 		new_tab[i] = ft_strdup(tab[i]);
 		if (new_tab[i] == NULL)
 		{
-			ft_puterror(FAILED_MALLOC);
+			ft_puterror(FAILED_MALLOC, NULL);
 			return (ft_free_tab(new_tab, i));
 		}
 	}
@@ -74,7 +74,7 @@ char	**regenerate_ev(int len, int index, char **ev)
 		return (NULL);
 	my_ev = malloc(sizeof(*my_ev) * (len + 1));
 	if (!my_ev)
-		return (ft_puterror(FAILED_MALLOC));
+		return (ft_puterror(FAILED_MALLOC, NULL));
 	trgr = 0;
 	i = -1;
 	while (++i < len)
@@ -85,7 +85,7 @@ char	**regenerate_ev(int len, int index, char **ev)
 		else
 			my_ev[i] = ft_strdup("");
 		if (my_ev[i] == NULL)
-			return (ft_puterror(FAILED_MALLOC), ft_free_tab(my_ev, i));
+			return (ft_puterror(FAILED_MALLOC, NULL), ft_free_tab(my_ev, i));
 	}
 	return (my_ev[len] = NULL, ft_free_tab(ev, -1), my_ev);
 }
@@ -151,10 +151,10 @@ char	*ft_ev_setvar(char *var_name, char *str, char ***addr_ev)
 	else
 		tmp = ft_strjoin_lkrief(var_name, "=");
 	if (!tmp)
-		return (ft_puterror(FAILED_MALLOC));
+		return (ft_puterror(FAILED_MALLOC, NULL));
 	(*addr_ev)[n] = ft_strjoin_lkrief(tmp, str);
 	if (!(*addr_ev)[n])
-		ft_puterror(FAILED_MALLOC);
+		ft_puterror(FAILED_MALLOC, NULL);
 	free(tmp);
 	return ((*addr_ev)[n]);
 }

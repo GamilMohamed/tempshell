@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 21:25:30 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 14:32:27 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/19 04:06:50 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	*ft_free(void **ptr);
 char	*ft_strcpy(char *dst, char *src);
 char	*ft_realloc(char *s1, char *s2);
 int		ft_checkchars(char c, char c1, char c2, char c3);
+int		ft_isspace(int c);
+
 // char				*ft_realloc(char *s1, char const *s2);
 void	ft_printtab(char **tab);
 char	*ft_strcat(char *dest, char *src);

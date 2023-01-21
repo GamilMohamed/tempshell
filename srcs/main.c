@@ -6,18 +6,11 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/17 02:02:43 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/20 07:09:37 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	*ft_puterror(int flag)
-{
-	if (flag & FAILED_MALLOC)
-		ft_putstr_fd("Malloc failed\n", STDERR_FILENO);
-	return (NULL);
-}
 
 void	prompt(t_data *data)
 {
@@ -46,7 +39,7 @@ int	exec(char **env, t_data *data)
 	int		fd;
 	t_btree	*tree;
 
-	env = ft_copy_tab(env);
+	data->env = ft_copy_tab(env);
 	while (1)
 	{
 		prompt(data);
@@ -65,12 +58,13 @@ int	exec(char **env, t_data *data)
 		}
 		if (checkquotes(str) || checksyntax(str))
 			continue ;
-		str = ft_expand(str, env);
-		if (ft_builtin(str, env, &env))
+		if (ft_builtin(str, data->env, &data->env))
 			continue ;
 		if (!str || !*str || !ft_strcmp(str, "exit"))
 			break ;
-		tree = get_tree(str, env, data);
+		here_doc(data, str);
+		str = ft_expand(str, data->env);
+		tree = get_tree(str, data->env, data);
 		ft_free((void **)&str);
 		if (tree)
 		{
@@ -78,14 +72,15 @@ int	exec(char **env, t_data *data)
 			exec_tree(tree, STDIN_FILENO, STDOUT_FILENO);
 			free_tree(tree);
 		}
-		// ft_printf("FIN EXECUTION PREMIeRE CMD\n");
-		// ft_infix(tree);
+		ft_freetab(data->filename);
+		ft_freetab(data->here_docs);
 	}
+	ft_printf("exit\n");
 	ft_free((void **)& data->prompt);
 	rl_clear_history();
 	ft_free((void **)& str);
 	ft_freetab(data->path);
-	ft_freetab(env);
+	ft_freetab(data->env);
 	return (0);
 }
 
@@ -96,8 +91,9 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, & ctrlc);
 	ft_memset(&data, 0, sizeof(t_data));
-	data.env = env;
+	// data.env = env;
 	data.prev_pipes = -1;
 	exec(env, &data);
 	exit(data.status);

@@ -6,7 +6,7 @@
 #    By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/01 20:50:14 by mgamil            #+#    #+#              #
-#    Updated: 2023/01/14 12:08:30 by mgamil           ###   ########.fr        #
+#    Updated: 2023/01/19 04:08:44 by mgamil           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ SRCS 		= 																																																																\
 $(DIR_GNL)/get_next_line.c	$(DIR_GNL)/get_next_line_utils.c																																																				\
 $(DIR_PTF)/ft_printf.c		$(DIR_PTF)/ft_printf_utils.c	$(DIR_PTF)/ft_printf_colors.c																																													\
 $(DIR_MEM)/ft_calloc.c		$(DIR_MEM)/ft_bzero.c			$(DIR_MEM)/ft_memset.c																																															\
-$(DIR_PERSO)/ft_swap.c		$(DIR_PERSO)/ft_freetab.c		$(DIR_PERSO)/ft_strcpy.c $(DIR_PERSO)/ft_strcmp.c	$(DIR_PERSO)/ft_free.c	$(DIR_PERSO)/ft_checkchars.c	${DIR_PERSO}/ft_realloc.c	${DIR_PERSO}/ft_printtab.c	${DIR_PERSO}/ft_strcat.c																			\
+$(DIR_PERSO)/ft_swap.c		$(DIR_PERSO)/ft_freetab.c		$(DIR_PERSO)/ft_isspace.c $(DIR_PERSO)/ft_strcpy.c $(DIR_PERSO)/ft_strcmp.c	$(DIR_PERSO)/ft_free.c	$(DIR_PERSO)/ft_checkchars.c	${DIR_PERSO}/ft_realloc.c	${DIR_PERSO}/ft_printtab.c	${DIR_PERSO}/ft_strcat.c																			\
 $(DIR_TO)/ft_atoi.c			$(DIR_TO)/ft_tolower.c			$(DIR_TO)/ft_toupper.c		$(DIR_TO)/ft_itoa.c																																									\
 $(DIR_IS)/ft_isalpha.c		$(DIR_IS)/ft_isascii.c			$(DIR_IS)/ft_isalnum.c		$(DIR_IS)/ft_isdigit.c	$(DIR_IS)/ft_isprint.c																																		\
 $(DIR_STR)/ft_strlcpy.c		$(DIR_STR)/ft_split.c		$(DIR_STR)/ft_strchr.c			$(DIR_STR)/ft_strdup.c		$(DIR_STR)/ft_strjoin.c	$(DIR_STR)/ft_strlen.c		$(DIR_STR)/ft_strncmp.c		$(DIR_STR)/ft_strnstr.c		$(DIR_STR)/ft_strrchr.c	$(DIR_STR)/ft_strtrim.c	$(DIR_STR)/ft_substr.c	\

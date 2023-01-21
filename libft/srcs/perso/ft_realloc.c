@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+ /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   ft_realloc.c                                       :+:      :+:    :+:   */
@@ -19,7 +19,7 @@ char	*ft_realloc(char *s1, char *s2)
 	size_t	s2len;
 
 	if (!s2)
-		return (0);
+		return (s1);
 	if (!s1)
 		return (ft_strdup(s2));
 	s1len = ft_strlen(s1);
@@ -29,7 +29,7 @@ char	*ft_realloc(char *s1, char *s2)
 	ft_strcpy(temp + s1len, s2);
 	if (!temp)
 		return (NULL);
-	free(s1);
+	ft_free((void **)& s1);
 	return (temp);
 }
 

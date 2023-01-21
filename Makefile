@@ -6,7 +6,7 @@ DIR_SRCS		=	srcs
 
 DIR_OBJS		=	objs
 
-SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c cd.c \
+SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c signals.c \
 				rpn/rpn_algo.c \
 				rpn/rpn_basics.c \
 				rpn/rpn_pop_utils.c \
@@ -15,11 +15,13 @@ SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c cd.c \
 				trees/trees.c \
 				trees/print_tree/print_trees.c \
 				trees/print_tree/queues.c \
-				exec/exec.c exec/utils.c \
+				exec/exec.c exec/utils.c exec/freeutils.c exec/space.c exec/error.c \
 				builtins/cd.c  \
 				builtins/env_utils.c \
 				builtins/export.c \
-				builtins/unset.c 
+				error_handler/error.c \
+				builtins/unset.c \
+				here_doc/here_doc.c
 
 
 OBJS_NAMES		=	${SRCS_NAMES:.c=.o}
@@ -58,6 +60,8 @@ $(DIR_OBJS):
 	mkdir -p objs/trees/print_tree
 	mkdir -p objs/rpn
 	mkdir -p objs/builtins
+	mkdir -p objs/error_handler
+	mkdir -p objs/here_doc
 	mkdir -p objs/exec
 
 clean:
@@ -72,7 +76,11 @@ fclean:	clean
 	rm -rf ${NAME}
 
 leaks: ${NAME}
-	valgrind --suppressions=ignore.txt -s --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell
+	valgrind --suppressions=ignore.txt -s --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all ./minishell
+
+leask: $(NAME)
+	valgrind --suppressions=ignore.txt -s --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all ./minishell
+
 
 env: $(NAME)
 	env -i ./minishell

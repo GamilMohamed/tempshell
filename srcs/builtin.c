@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/17 02:01:26 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/20 09:49:00 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,29 +92,13 @@ static int	builtin_echo(char *s, char **env)
 
 char	*builtin_pwd(char *s)
 {
-	char	*str;
-	char	*temp;
-	int		ret;
-	int		i;
+	char 	buff[PATH_MAX];
 
-	i = 1;
-	str = ft_calloc(i, 1); // check malloc
-	while (1)
-	{
-		if (getcwd(str, i))
-			break ;
-		else
-		{
-			free(str);
-			str = ft_calloc(i + 1, 1);
-			if (!str)
-				return (NULL);
-		}
-		i++;
-	}
-	if (s)
-		printf("%s\n", str);
-	return (str);
+	if (getcwd(buff, sizeof(buff)) == NULL)
+		printf("error: %s", strerror(errno));
+	else if (s)
+		printf("%s\n", buff);
+	return (ft_strdup(buff));
 }
 
 static int	builtin_cd(char *str, char ***addr_ev)
@@ -127,7 +111,7 @@ static int	builtin_cd(char *str, char ***addr_ev)
 	{
 		tab = ft_split(str + 3, ' ');
 		if (!tab)
-			return (ft_puterror(FAILED_MALLOC), -1);
+			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		success = ft_cd(tab, addr_ev);
 		ft_free_tab(tab, -1);
 	}
@@ -144,7 +128,7 @@ static int	builtin_export(char *str, char ***addr_ev)
 	{
 		tab = ft_split(str + 7, ' ');
 		if (!tab)
-			return (ft_puterror(FAILED_MALLOC), -1);
+			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		success = ft_export(tab, addr_ev);
 		ft_free_tab(tab, -1);
 	}
@@ -161,7 +145,7 @@ static int	builtin_unset(char *str, char ***addr_ev)
 	{
 		tab = ft_split(str + 6, ' ');
 		if (!tab)
-			return (ft_puterror(FAILED_MALLOC), -1);
+			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		success = ft_unset(tab, addr_ev);
 		ft_free_tab(tab, -1);
 	}

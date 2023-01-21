@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 10:21:21 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/17 01:08:56 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/20 06:36:21 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	dupnclose(int fd, int std)
 	close(fd);
 }
 
-void	ft_lstadd_back_rr(t_rr **lst, t_rr *new)
+int	ft_lstadd_back_rr(t_rr **lst, t_rr *new)
 {
 	t_rr	*begin;
 
@@ -51,6 +51,7 @@ void	ft_lstadd_back_rr(t_rr **lst, t_rr *new)
 			begin = begin->next;
 		begin->next = new;
 	}
+	return (1);
 }
 
 t_rr	*ft_lstnewrr(char *content, int type)
@@ -77,4 +78,15 @@ void	ft_printlist(t_rr *temp)
 		ft_printf("%s\n", head->content);
 		head = head->next;
 	}
+}
+
+char	*invert(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+		if (str[i] < 0)
+			str[i] = -str[i];
+	return (str);
 }

@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/17 00:44:12 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/20 10:35:28 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,17 +60,6 @@ static char	**ft_stripchar(char **tab, int count)
 	return (new);
 }
 
-char	*invert(char *str)
-{
-	int	i;
-
-	i = -1;
-	while (str[++i])
-		if (str[i] < 0)
-			str[i] = -str[i];
-	return (str);
-}
-
 void	execute(t_data *data, t_cmd *cmd, int boolean)
 {
 	char	*temp;
@@ -86,6 +75,7 @@ void	execute(t_data *data, t_cmd *cmd, int boolean)
 	while (tab[++i])
 		tab[i] = invert(tab[i]);
 	i = -1;
+	cmd->cmd = invert(cmd->cmd);
 	if (!data->env[0])
 		ft_printf("%s: command not found\n", cmd->cmd);
 	while (boolean && data->path[++i])
@@ -108,31 +98,9 @@ void	execute(t_data *data, t_cmd *cmd, int boolean)
 	ft_freetab(tab);
 }
 
-void	ft_freepostexec(t_cmd *cmd, t_data *data)
-{
-	ft_free((void **)&cmd->flags);
-	ft_free((void **)&cmd->cmd);
-	ft_free((void **)&cmd);
-	ft_freetab(data->path);
-}
-
-void	ft_freerr(t_rr *node)
-{
-	t_rr	*temp;
-
-	while (node)
-	{
-		ft_free((void **)& node->content);
-		temp = node->next;
-		ft_free((void **)& node);
-		node = temp;
-	}
-}
-
-void	openfiles(t_rr *node, t_data *data, t_cmd *cmd)
+void	openfiles(t_rr *node, t_data *data, t_cmd *cmd, int index)
 {
 	int		fd;
-	t_rr	*temp;
 	t_rr	*head;
 
 	head = node;
@@ -140,63 +108,54 @@ void	openfiles(t_rr *node, t_data *data, t_cmd *cmd)
 	{
 		if (node->type == 1) // >
 			fd = open(node->content, O_TRUNC | O_WRONLY | O_CREAT, 0666);
-		if (node->type == 2) // >>
+		else if (node->type == 2) // >>
 			fd = open(node->content, O_APPEND | O_WRONLY | O_CREAT, 0666);
-		if (node->type == 3) // <
+		else if (node->type == 3) // <
 			fd = open(node->content, O_RDONLY);
+		else if (node->type == 4) // <<
+			fd = open(data->filename[index], O_RDONLY);
 		if (fd == -1)
-		{
-			if (errno == 13)
-				ft_printf("bash: %s: Permission denied\n", node->content);
-			else
-				ft_printf("bash: %s: No such file or directory\n", node->content);
-			ft_freetab(data->split);
-			ft_freepostexec(cmd, data);
-			ft_freerr(head);
-			close(data->fd[1]);
-			close(data->fd[0]);
-			exit(1);
-		}
-		if (node->type == 3)
+			error_fd(node, data, cmd, index);
+		if (node->type > 2)
 			dupnclose(fd, STDIN_FILENO);
-		if (node->type != 3)
+		else if (node->type < 3)	
 			dupnclose(fd, STDOUT_FILENO);
 		node = node->next;
-		ft_printf("LOL\n");
 	}
-	// ft_freerr(head);
 }
 
 void	forking(t_data *data, int index, int max, t_cmd *cmd)
 {
+	// if (index == 0 && max == 1)
+	// {
+	// 	if (!ft_strncmp(cmd->cmd, "echo", 4))
+	// 		;
+	// 	else
+	// 		ft_builtin(cmd->cmd, data->path, &data->path);
+	// }
 	if (index != max - 1) // 0 1 2 3
-	{
-		ft_printf("max - 1=%i\n", max - 1);
 		dup2(data->fd[1], STDOUT_FILENO);
-	}
 	if (index != 0) // 1 2 3 4
-	{
-		ft_printf("CMD && INDEX%s[%i]\n", cmd->cmd, index);
 		dupnclose(data->prev_pipes, STDIN_FILENO);
-	}
-	openfiles(cmd->redi, data, cmd);
+	openfiles(cmd->redi, data, cmd, index);
 	close(data->fd[1]);
 	close(data->fd[0]);
-	execute(data, cmd, !(ft_strchr(cmd->cmd, '/')));
+	if (cmd->cmd)
+		execute(data, cmd, !(ft_strchr(cmd->cmd, '/')));
 }
 
 char	*checkstring(t_cmd *cmd, char *str)
 {
 	int		i;
 	int		count;
-	char	*flags;
 	char	**tab;
-	t_rr	*tmp;
-
+	char	*wild;
 	tab = ft_split(str, ' ');
 	// ft_printtab(tab);
-	tmp = cmd->redi;
+	cmd->redi = 0;
+	cmd->flags = 0;
 	count = 0;
+	wild = 0;
 	i = -1;
 	while (tab[++i])
 	{
@@ -206,76 +165,104 @@ char	*checkstring(t_cmd *cmd, char *str)
 			count++;
 			cmd->cmd = ft_strdup(tab[i]);
 			cmd->flags = ft_realloc(cmd->flags, tab[i]);
-		}
+		} 
 		else if (!isaredirection(tab[i]))
 		{
 			// ft_printf("%y%s%0 ", tab[i]); // FLAG
 			cmd->flags = ft_realloc(cmd->flags, " ");
 			if (ft_strchr(tab[i], '*'))
-				cmd->flags = ft_realloc(cmd->flags, ft_wildcard(tab[i]));
+			{
+				wild = ft_wildcard(tab[i]);
+				cmd->flags = ft_realloc(cmd->flags, wild);
+				ft_free((void **)& wild);
+			}
 			else
 				cmd->flags = ft_realloc(cmd->flags, tab[i]);
 		}
 		else
-		{
-			// ft_printf("%b%s%0 %b%s%0 ", tab[i], tab[i + 1]); // REDIRECTION
-			ft_lstadd_back_rr(&cmd->redi, ft_lstnewrr(ft_strdup(tab[i + 1]), isaredirection(tab[i])));
-			i++;
-		}
+			i += ft_lstadd_back_rr(&cmd->redi, ft_lstnewrr(ft_strdup(tab[i + 1]), isaredirection(tab[i])));
 	}
+	ft_printlist(cmd->redi);
 	ft_freetab(tab);
-	ft_printf("{%s}\n", cmd->flags);
+	// ft_printf("{%s}\n", cmd->flags);
 	return (NULL);
 }
+
+// void	checkbuiltin(t_cmd *cmd, int max)
+// {
+// 	if (max != 1)
+// 		return ;
+// 	if (!isbuiltin(cmd->cmd))
+// 		return ;
+	
+// }
+
+
 
 int	exec_command(t_btree *tree, int infile, int outfile)
 {
 	int		i;
 	char	**tab;
 	int		nbcmd;
-	t_cmd	*cmd;
+	t_cmd	cmd;
+	char	*temp;
 	int		status;
+	static int var = 0;
 
-	cmd = ft_calloc(sizeof(t_cmd), 1);
+	ft_bzero(& cmd, sizeof(t_cmd));
 	// printf("[%s]\n", (char *)tree->node);
 	tree->data->split = ft_split(tree->node, '|');
 	nbcmd = ft_countdelim(tree->node, '|');
-	ft_printf("%i\n", nbcmd);
 	i = -1;
 	while (++i < nbcmd) // < nbcmd)
 	{
-		checkstring(cmd, tree->data->split[i]);
+		tree->data->split[i] = ft_spacestr(tree->data->split[i]);
+		checkstring(& cmd, tree->data->split[i]);
+		// checkbuiltin(& cmd, nb& cmd);
 		pipe(tree->data->fd);
+		signal(SIGINT, SIG_IGN);
 		tree->data->pid[i] = fork();
 		if (tree->data->pid[i] == 0)
 		{
-			forking(tree->data, i, nbcmd, cmd);
-			ft_freepostexec(cmd, tree->data);
-			ft_freerr(cmd->redi);
-			// ft_freetab(tree->data->split);
+			signal(SIGINT, & ctrlc);
+			signal(SIGQUIT, & antislash);
+			forking(tree->data, i, nbcmd, & cmd);
+			ft_errorcmd(tree->data, & cmd, cmd.redi, "");
 			exit(tree->data->status);
 		}
 		else
 		{
-			printf("%i|%i|%i\n", tree->data->fd[0], tree->data->fd[1],
-					tree->data->prev_pipes);
 			close(tree->data->fd[1]);
 			if (tree->data->prev_pipes != -1)
 				close(tree->data->prev_pipes);
 			tree->data->prev_pipes = tree->data->fd[0];
+			ft_free((void **)&cmd.cmd);
+			ft_free((void **)&cmd.flags);
+			ft_freerr(cmd.redi);
+			signal(SIGQUIT, SIG_IGN);
 		}
 	}
 	ft_freetab(tree->data->split);
-	ft_free((void **)&cmd->flags);
-	ft_freerr(cmd->redi);
-	ft_free((void **)&cmd->cmd);
-	ft_free((void **)&cmd);
+	ft_free((void **)& cmd.flags);
+	// ft_freerr(cmd.redi);
+	// ft_freetab(tree->data->here_docs);
+	// ft_freetab(tree->data->filename);
+	// tree->data->filename = 0;
+	// tree->data->here_docs = 0;
+	// ft_free((void **)&cmd.cmd);
+	// ft_free((void **)&cmd);
 	close(tree->data->fd[0]);
 	i = -1;
 	while (++i < nbcmd)
-		waitpid(tree->data->pid[i], &status, 0);
-	if (WIFEXITED(status))
-		tree->data->status = WEXITSTATUS(status);
+	{
+		waitpid(tree->data->pid[i], &tree->data->status, 0);
+		if (WIFEXITED(tree->data->status))
+			tree->data->status = WEXITSTATUS(tree->data->status);
+		if (tree->data->status == 131 && !var++)
+			ft_printf("Quit (core dumped)\n");
+	}
+	var = 0;
+	signal(SIGINT, & ctrlc);
 	return (0);
 }
 

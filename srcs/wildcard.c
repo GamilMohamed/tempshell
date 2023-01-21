@@ -6,12 +6,12 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 18:59:25 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/16 20:20:14 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/20 10:48:58 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "libft.h"
+#include "minishell.h"
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,6 +76,7 @@ int	check_wildcards(char *haystack, char *wildcards)
 			wildcards++;
 		if (*wildcards)
 		{
+			ft_printf("*wildcards=%c\n", *wildcards);
 			w = ft_str_wildcard_len(wildcards);
 			if (w_trigger)
 				haystack = ft_strnstr_wcd(haystack, wildcards, w);
@@ -93,27 +94,36 @@ int	check_wildcards(char *haystack, char *wildcards)
 
 char	*ft_wildcard(char *wildcards)
 {
-	int				i;
-	char			*str;
 	char			*temp;
 	DIR				*dir;
 	struct dirent	*entry;
+	char			*pwd;
 
-	temp = ft_calloc(1, 1);
-	dir = opendir(builtin_pwd(NULL));
+	temp = 0;
+	pwd = builtin_pwd(NULL);
+	dir = opendir(pwd);
+	free(pwd);
 	entry = readdir(dir);
 	while (entry)
 	{
-		while (!ft_strncmp(entry->d_name, ".", 1))
+		// ft_printf("wildcards=%s\n", wildcards);
+		while (wildcards[0] != '.' && entry->d_name[0] == '.')
+		{
 			entry = readdir(dir);
+			ft_printf("entry->d_name=%s\n", entry->d_name);
+		}	
+		ft_printf("jmechappe %s\n", entry->d_name);
+		// if (!entry->d_name[0])
+		// 	break ;
 		if (check_wildcards(entry->d_name, wildcards))
 		{
-			temp = ft_strjoin_gnl(temp, entry->d_name);
-			temp = ft_strjoin_gnl(temp, " ");
+			temp = ft_realloc(temp, entry->d_name);
+			temp = ft_realloc(temp, " ");
 		}
+		ft_printf("jme suis echappe:%s\n", entry->d_name);
 		entry = readdir(dir);
 	}
-	free(dir);
+	closedir(dir);
 	return (temp);
 }
 

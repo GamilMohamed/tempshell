@@ -1,20 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/14 20:35:29 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/17 01:54:40 by mgamil           ###   ########.fr       */
+/*   Created: 2023/01/20 06:17:04 by mgamil            #+#    #+#             */
+/*   Updated: 2023/01/20 06:17:23 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void	ft_cd(char *str)
-// {
-// 	char **tab = ft_split(str, ' ');
-// 	if (tab[1])
-// 		chdir(tab[1]);
-// }
+void	antislash(int sig)
+{
+	if (sig == SIGQUIT)
+		exit(131);
+	if (sig == SIGINT)
+		exit(130);
+}
+
+void    ctrlc(int sig)
+{
+    if (sig == SIGINT)
+    {
+        printf("\n");
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+    }
+}

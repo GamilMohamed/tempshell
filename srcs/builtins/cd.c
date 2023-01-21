@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/15 17:47:54 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/16 23:20:44 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/19 20:28:14 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ int	change_directory(char *new_pwd, char ***addr_ev)
 		return (0);
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
-		return (ft_puterror(FAILED_MALLOC), 0);
+		return (ft_puterror(FAILED_MALLOC, NULL), 0);
 	if (!chdir(new_pwd))
 	{
 		ft_ev_setvar("OLDPWD", pwd, addr_ev);
 		free(pwd);
 		pwd = getcwd(NULL, 0);
 		if (!pwd)
-			return (ft_puterror(FAILED_MALLOC), 0);
+			return (ft_puterror(FAILED_MALLOC, NULL), 0);
 		ft_ev_setvar("PWD", pwd, addr_ev);
 		free(pwd);
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:22 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/17 02:00:18 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/20 07:10:24 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <sys/types.h>
+# include <limits.h>
 # include <sys/wait.h>
 
 # define SPACES " \t\n\v"
@@ -40,7 +41,7 @@
 # define WHITE "\001\033[0;37m\002"
 
 /*
-struct	dirent
+struct	dirent 
 {
 	ino_t d_ino;             // numéro d'inœud
 	off_t d_off;             // décalage jusqu'à la dirent suivante
@@ -63,12 +64,29 @@ int		isaredirection(char *s);
 
 char	*ft_slash(char *path, char *cmd);
 void	dupnclose(int fd, int std);
-void	ft_lstadd_back_rr(t_rr **lst, t_rr *new);
+int	ft_lstadd_back_rr(t_rr **lst, t_rr *new);
 t_rr	*ft_lstnewrr(char *content, int type);
 void	ft_printlist(t_rr *temp);
 char	*ft_wildcard(char *wildcards);
 char	*builtin_pwd(char *s);
-void	*ft_puterror(int flag);
+void	*ft_puterror(int flag, void *param);
+// exec
+char	*invert(char *str);
+	// utils
+void	ft_freerr(t_rr *node);
+void	ft_errorcmd(t_data *data, t_cmd *cmd, t_rr *node, char *str);
+char	*ft_spacestr(char *str);
+	// error.c
+void	error_fd(t_rr *node, t_data *data, t_cmd *cmd, int index);
 
+// heredoc
+int		count_hd(char *str);
+char	*here_doc(t_data *data, char *str);
+void	antislash(int sig);
+void	ctrlc(int sig);
+
+// signal.c
+void	antislash(int sig);
+void	ctrlc(int sig);
 
 #endif
