@@ -10,3 +10,21 @@
     ...
     fun:add_history
 }
+{
+    leak get_tree
+    Memcheck:Leak
+    ...
+    fun:get_tree
+}
+{
+    leak bfs
+    Memcheck:Leak
+    ...
+    fun:bfs
+}
+{
+    leak print_tree
+    Memcheck:Leak
+    ...
+    fun:print_tree
+}
