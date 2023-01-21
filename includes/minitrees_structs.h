@@ -37,6 +37,7 @@ typedef struct s_data
 	char			**split;
 	int				fd[2];
 	int				status;
+	int				tty;
 	// bool			on;
 	char			**here_docs;
 	char			**filename;

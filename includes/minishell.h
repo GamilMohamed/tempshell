@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:22 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/20 07:10:24 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/21 12:01:41 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ struct	dirent
 // split.c
 char	**ft_splitex(char const *s);
 // builtin.c
-int		ft_builtin(char *s, char **env, char ***addr_env);
+int	ft_builtin(t_cmd *cmd, t_data *data);
+// int		ft_builtin(char *s, char **env, char ***addr_env);
 // expand.c
 char	*ft_expand(char *s, char **env);
 int		checksyntax(char *s);

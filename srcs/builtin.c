@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/20 09:49:00 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/21 12:00:47 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,10 @@ char	*builtin_pwd(char *s)
 	if (getcwd(buff, sizeof(buff)) == NULL)
 		printf("error: %s", strerror(errno));
 	else if (s)
+	{
 		printf("%s\n", buff);
+		return (NULL);
+	}
 	return (ft_strdup(buff));
 }
 
@@ -152,27 +155,48 @@ static int	builtin_unset(char *str, char ***addr_ev)
 	return (success);
 }
 
-int	ft_builtin(char *s, char **env, char ***addr_env)
+int	ft_builtin(t_cmd *cmd, t_data *data)
 {
-	char *temp;
-
-	temp = ft_strtrim(s, " ");
-	if (!ft_strcmp(temp, "pwd"))
-		return (builtin_pwd(temp), free(temp), 1);
-	if (!ft_strncmp(temp, "echo", 4))
-		return (builtin_echo(temp, env), free(temp), 1);
-	// if (!ft_strcmp(temp, "echo"))
+	if (!ft_strcmp(cmd->cmd, "pwd"))
+		return (builtin_pwd(cmd->cmd), 1);
+	if (!ft_strncmp(cmd->cmd, "echo", 4))
+		return (builtin_echo(cmd->cmd, data->path), 1);
+	// if (!ft_strcmp(cmd->cmd, "echo"))
 		// return (ft_printf("\n"));
-	if (!ft_strcmp(temp, "env"))
-		return (builtin_env(temp, env), free(temp), 1);
-	if (!ft_strncmp(temp, "cd ", 3) || !ft_strcmp(temp, "cd"))
-		return (builtin_cd(temp, addr_env), free(temp), 1);
-	if (!ft_strncmp(temp, "export ", 7) || !ft_strcmp(temp, "export"))
-		return (builtin_export(temp, addr_env), free(temp), 1);
-	if (!ft_strncmp(temp, "unset ", 6))
-		return (builtin_unset(temp, addr_env), free(temp), 1);
-	if (!ft_strcmp(temp, "exit"))
-		return (free(temp), free(s), exit(1), 1);
-	free(temp);
+	if (!ft_strcmp(cmd->cmd, "env"))
+		return (builtin_env(cmd->cmd, data->path), 1);
+	if (!ft_strncmp(cmd->cmd, "cd ", 3) || !ft_strcmp(cmd->cmd, "cd"))
+		return (builtin_cd(cmd->cmd, &data->path), 1);
+	if (!ft_strncmp(cmd->cmd, "export ", 7) || !ft_strcmp(cmd->cmd, "export"))
+		return (builtin_export(cmd->cmd, &data->path), 1);
+	if (!ft_strncmp(cmd->cmd, "unset ", 6))
+		return (builtin_unset(cmd->cmd, &data->path), 1);
+	// if (!ft_strcmp(cmd->cmd, "exit"))
+		// return (, exit(1), 1);
 	return (0);
 }
+
+// int	ft_builtin(char *s, char **env, char ***addr_env)
+// {
+// 	char *temp;
+
+// 	temp = ft_strtrim(s, " ");
+// 	if (!ft_strcmp(temp, "pwd"))
+// 		return (builtin_pwd(temp), free(temp), 1);
+// 	if (!ft_strncmp(temp, "echo", 4))
+// 		return (builtin_echo(temp, env), free(temp), 1);
+// 	// if (!ft_strcmp(temp, "echo"))
+// 		// return (ft_printf("\n"));
+// 	if (!ft_strcmp(temp, "env"))
+// 		return (builtin_env(temp, env), free(temp), 1);
+// 	if (!ft_strncmp(temp, "cd ", 3) || !ft_strcmp(temp, "cd"))
+// 		return (builtin_cd(temp, addr_env), free(temp), 1);
+// 	if (!ft_strncmp(temp, "export ", 7) || !ft_strcmp(temp, "export"))
+// 		return (builtin_export(temp, addr_env), free(temp), 1);
+// 	if (!ft_strncmp(temp, "unset ", 6))
+// 		return (builtin_unset(temp, addr_env), free(temp), 1);
+// 	if (!ft_strcmp(temp, "exit"))
+// 		return (free(temp), free(s), exit(1), 1);
+// 	free(temp);
+// 	return (0);
+// }

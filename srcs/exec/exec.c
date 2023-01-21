@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/20 10:35:28 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/21 12:32:13 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ void	openfiles(t_rr *node, t_data *data, t_cmd *cmd, int index)
 		else if (node->type < 3)	
 			dupnclose(fd, STDOUT_FILENO);
 		node = node->next;
+		ft_printf("fd=%i\n", fd);
 	}
 }
 
@@ -188,16 +189,28 @@ char	*checkstring(t_cmd *cmd, char *str)
 	return (NULL);
 }
 
-// void	checkbuiltin(t_cmd *cmd, int max)
-// {
-// 	if (max != 1)
-// 		return ;
-// 	if (!isbuiltin(cmd->cmd))
-// 		return ;
-	
-// }
+int	isbuiltin(char *str)
+{
+	if (!ft_strcmp(str, "pwd"))
+		return (1);
+	return (0);
+}
 
-
+int exec_builtin(t_cmd *cmd, t_data *data)
+{
+	int copyfd;
+	if (!isbuiltin(cmd-
+>cmd))
+		return (0);
+	copyfd = dup(STDOUT_FILENO);
+	openfiles(cmd->redi, data, cmd, 0);
+	ft_builtin(cmd, data);
+	dup2(copyfd, STDOUT_FILENO);
+	close(data->fd[0]);
+	close(data->fd[1]);
+	close(copyfd);
+	return (1);
+}
 
 int	exec_command(t_btree *tree, int infile, int outfile)
 {
@@ -220,6 +233,8 @@ int	exec_command(t_btree *tree, int infile, int outfile)
 		checkstring(& cmd, tree->data->split[i]);
 		// checkbuiltin(& cmd, nb& cmd);
 		pipe(tree->data->fd);
+		if (nbcmd == 1 && exec_builtin(&cmd, tree->data))
+				break ;
 		signal(SIGINT, SIG_IGN);
 		tree->data->pid[i] = fork();
 		if (tree->data->pid[i] == 0)

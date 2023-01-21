@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/20 07:09:37 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/21 12:22:51 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ int	exec(char **env, t_data *data)
 		}
 		if (checkquotes(str) || checksyntax(str))
 			continue ;
-		if (ft_builtin(str, data->env, &data->env))
-			continue ;
+		// if (ft_builtin(str, data->env, &data->env))
+		// 	continue ;
 		if (!str || !*str || !ft_strcmp(str, "exit"))
 			break ;
 		here_doc(data, str);
@@ -92,6 +92,8 @@ int	main(int ac, char **av, char **env)
 	
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, & ctrlc);
+	// if(!isatty(STDIN_FILENO))
+	// 	data.tty = 1;
 	ft_memset(&data, 0, sizeof(t_data));
 	// data.env = env;
 	data.prev_pipes = -1;
