@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/21 21:42:20 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/22 03:42:05 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ static int	builtin_cd(char *str, char ***addr_ev)
 	success = -1;
 	if (str)
 	{
-		tab = ft_split(str + 3, ' ');
+		tab = ft_split(str + 3f, ' ');
 		if (!tab)
 			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		success = ft_cd(tab, addr_ev);

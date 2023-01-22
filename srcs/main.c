@@ -6,31 +6,36 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/21 12:22:51 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/22 01:56:24 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	prompt(t_data *data)
+char	*prompt(t_data *data)
 {
-	char		*str;
-	char		**tab;
-	int			count;
+	char	*str;
+	char	*s;
+	char	prompt[PATH_MAX];
+	char	**tab;
+	int		count;
+
 	str = builtin_pwd(NULL);
 	tab = ft_split(str, '/');
 	count = ft_countdelim(str, '/');
 	if (data->status)
-		data->prompt = ft_strdup(RED);
+		ft_strcpy(prompt, RED);
 	else
-		data->prompt = ft_strdup(GREEN);
+		ft_strcpy(prompt, GREEN);
 	if (count)
-		data->prompt = ft_realloc(data->prompt, tab[count - 1]);
+		ft_strcat(prompt, tab[count - 1]);
 	else
-		data->prompt = ft_realloc(data->prompt, str);
-	data->prompt = ft_realloc(data->prompt, "\001\033[0m\002:");
-	ft_free((void **)& 	str);
+		ft_strcat(prompt, str);
+	ft_strcat(prompt, "\001\033[0m\002:");
+	ft_free((void **)&str);
 	ft_freetab(tab);
+	s = readline(prompt);
+	return (s);
 }
 
 int	exec(char **env, t_data *data)
@@ -42,9 +47,9 @@ int	exec(char **env, t_data *data)
 	data->env = ft_copy_tab(env);
 	while (1)
 	{
-		prompt(data);
-		str = readline(data->prompt);
-		ft_free((void **)& data->prompt);
+		str = prompt(data);
+		// str = readline(data->prompt);
+		ft_free((void **)&data->prompt);
 		fd = open("history.txt", O_RDWR | O_CREAT | O_APPEND, 0644);
 		ft_putendl_fd(str, fd);
 		add_history(str);
@@ -57,11 +62,17 @@ int	exec(char **env, t_data *data)
 			continue ;
 		}
 		if (checkquotes(str) || checksyntax(str))
+		{
+			data->status = 2;
 			continue ;
+		}
 		// if (ft_builtin(str, data->env, &data->env))
 		// 	continue ;
 		if (!str || !*str || !ft_strcmp(str, "exit"))
+		{
+			data->status = 0;
 			break ;
+		}
 		here_doc(data, str);
 		str = ft_expand(str, data->env);
 		tree = get_tree(str, data->env, data);
@@ -76,9 +87,9 @@ int	exec(char **env, t_data *data)
 		ft_freetab(data->here_docs);
 	}
 	ft_printf("exit\n");
-	ft_free((void **)& data->prompt);
+	ft_free((void **)&data->prompt);
 	rl_clear_history();
-	ft_free((void **)& str);
+	ft_free((void **)&str);
 	ft_freetab(data->path);
 	ft_freetab(data->env);
 	return (0);
@@ -87,11 +98,11 @@ int	exec(char **env, t_data *data)
 int	main(int ac, char **av, char **env)
 {
 	t_data	data;
+
 	(void)ac;
 	(void)av;
-	
 	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, & ctrlc);
+	signal(SIGINT, &ctrlc);
 	// if(!isatty(STDIN_FILENO))
 	// 	data.tty = 1;
 	ft_memset(&data, 0, sizeof(t_data));
@@ -212,7 +223,7 @@ nbcmd=5
 4|6|5
 5|6|4
 4|6|5
-append	history.txt  includes  libft.a			liblkriefft.a  minishell  out   out2  out4	   outside  srcs
+append	history.txt  includes  libft.a			liblkriefft.a  minishell  out   out2  out4		outside  srcs
 gab	ignore.txt   libft     liblkriefft  Makefile		objs       out1  out3  outfile  pipex
 
 

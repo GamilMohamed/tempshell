@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/21 21:42:59 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/22 01:53:23 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,7 @@ int    matching(char *match)
     int                    i;
 
     i = 0;
+	ft_printf("match=%s\n", match);
     while (i < 7)
     {
         if (!ft_strcmp(matchs[i++], match))
@@ -272,7 +273,7 @@ int    matching(char *match)
 int exec_builtin(t_cmd *cmd, t_data *data)
 {
 	int copyfd;
-	if (!matching(cmd->cmd))
+	if (!cmd->cmd || !matching(cmd->cmd))
 		return (0);
 	copyfd = dup(STDOUT_FILENO);
 	// openfiles_bt(cmd->redi, data, cmd, 0);
@@ -351,9 +352,13 @@ int	exec_command(t_btree *tree, int infile, int outfile)
 	i = -1;
 	while (++i < nbcmd)
 	{
+		ft_printf("tonpere\n");
 		waitpid(tree->data->pid[i], &tree->data->status, 0);
 		if (WIFEXITED(tree->data->status))
+		{
+			ft_printf("tamere\n");
 			tree->data->status = WEXITSTATUS(tree->data->status);
+		}
 		if (tree->data->status == 131 && !var++)
 			ft_printf("Quit (core dumped)\n");
 	}
