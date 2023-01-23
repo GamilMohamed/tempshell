@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:07:10 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/23 01:14:13 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 07:49:13 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,13 @@ int	count_hd(char *str)
 	return (nb);
 }
 
-static char	**ft_getdelims(char *str)
+static char	**ft_getdelims(char *str, t_here *here)
 {
 	int		nb;
 	int		i;
 	char	**tab;
 
-	tab = malloc(sizeof(char *) * (count_hd(str) + 1));
+	here->here_docs = malloc(sizeof(char *) * (here->nb_here + 1));
 	i = 0;
 	nb = 0;
 	while (str[i])
@@ -86,25 +86,25 @@ static char	**ft_getdelims(char *str)
 			if (str[i] == '<')
 			{
 				i++;
-				tab[nb++] = get_word(&str[i]);
+				here->here_docs[nb++] = get_word(&str[i]);
 			}
 		}
 		i++;
 	}
-	tab[nb] = 0;
+	here->here_docs[nb] = 0;
 	return (tab);
 }
 
-static char	*openfileshd(int index, t_data *data)
+static char	*openfileshd(int index, t_here *here)
 {
 	char	*s;
 	int		fd;
 
-	fd = open(data->filename[index], O_RDWR | O_CREAT | O_TRUNC, 0666);
+	fd = open(here->filename[index], O_RDWR | O_CREAT | O_TRUNC, 0666);
 	while (1)
 	{
 		s = readline(">");
-		if (!s || !ft_strcmp(s, data->here_docs[index]))
+		if (!s || !ft_strcmp(s, here->here_docs[index]))
 			break ;
 		ft_putendl_fd(s, fd);
 		free(s);
@@ -113,13 +113,13 @@ static char	*openfileshd(int index, t_data *data)
 	return (NULL);
 }
 
-static char	**ft_getnames(t_data *data, char *str, int max)
+static char	**ft_getnames(t_here *here, char *str, int max)
 {
 	int		i;
 	char	*name;
 	char	**tab;
 
-	tab = malloc(sizeof(char *) * (max + 1));
+	tab = ft_calloc(sizeof(char *), (max + 1));
 	i = -1;
 	while (++i < max)
 	{
@@ -131,20 +131,18 @@ static char	**ft_getnames(t_data *data, char *str, int max)
 	return (tab);
 }
 
-char	*here_doc(t_data *data, char *str)
+char	*here_doc(t_here *here, char *str)
 {
 	int nbhere;
 	int i;
 	char **tab;
 	char **delimiter;
-
 	int r;
-	data->here_docs = ft_getdelims(str);
-	nbhere = count_hd(str);
-	data->filename = ft_getnames(data, str, nbhere);
-	ft_printf("DATA FILENAME\n");
-	ft_printtab(data->filename);
-	if (!nbhere)
+
+	here->nb_here = count_hd(str);
+	ft_getdelims(str, here);
+	here->filename = ft_getnames(here, str, here->nb_here);
+	if (!here->nb_here)
 		return (NULL);
 	signal(SIGINT, SIG_IGN);
 	// signal(SIGINT, & ctrlc);
@@ -153,14 +151,14 @@ char	*here_doc(t_data *data, char *str)
 	{
 		signal(SIGINT, &antislash);
 		i = -1;
-		while (++i < nbhere)
+		while (++i < here->nb_here)
 		{
-			openfileshd(i, data);
-			free(data->filename[i]);
+			openfileshd(i, here);
+			free(here->filename[i]);
 		}
-		free(data->filename);
-		ft_freetab(data->here_docs);
-		ft_freetab(data->env);
+		free(here->filename);
+		ft_freetab(here->here_docs);
+		// ft_freetab(env);
 		exit(1);
 	}
 	else if (pid > 0)

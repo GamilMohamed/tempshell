@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:22 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/23 00:36:43 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 07:37:01 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ void	exec_waitpid(t_data *data);
 
 // heredoc
 int		count_hd(char *str);
-char	*here_doc(t_data *data, char *str);
+char	*here_doc(t_here *here, char *str);
+// char	*here_doc(t_data *data, char *str);
 void	antislash(int sig);
 void	ctrlc(int sig);
 

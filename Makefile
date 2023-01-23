@@ -65,6 +65,7 @@ $(DIR_OBJS):
 	mkdir -p objs/here_doc
 	mkdir -p objs/exec
 	mkdir -p here_doc/
+	mkdir -p error_handler/
 
 clean:
 	make clean -C libft
