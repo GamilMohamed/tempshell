@@ -1,26 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freetab.c                                       :+:      :+:    :+:   */
+/*   utils_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/09 14:38:28 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/22 21:00:28 by mgamil           ###   ########.fr       */
+/*   Created: 2023/01/22 19:27:37 by mgamil            #+#    #+#             */
+/*   Updated: 2023/01/22 20:42:40 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	ft_freetab(char **tab)
+void	exec_waitpid(t_data *data)
 {
-	int		i;
-
-	i = 0;
-	if (!tab)
-		return ;
-	while (tab[i])
-		free(tab[i++]);
-	free(tab);
-	tab = 0;
+	int	i;
+	int	var;
+	
+	i = -1;
+	while (++i < data->nbcmd)
+	{
+		waitpid(data->pid[i], &data->status, 0);
+		if (WIFEXITED(data->status))
+			data->status = WEXITSTATUS(data->status);
+		if (data->status == 131 && !var++)
+			ft_printf("Quit (core dumped)\n");
+	}
+	var = 0;
 }

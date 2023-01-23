@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freetab.c                                       :+:      :+:    :+:   */
+/*   free_all.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/09 14:38:28 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/22 21:00:28 by mgamil           ###   ########.fr       */
+/*   Created: 2023/01/22 20:30:30 by mgamil            #+#    #+#             */
+/*   Updated: 2023/01/22 20:51:01 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	ft_freetab(char **tab)
+void	free_all(int s, int t, ...)
 {
-	int		i;
+	int i;
+	va_list	list;
 
-	i = 0;
-	if (!tab)
-		return ;
-	while (tab[i])
-		free(tab[i++]);
-	free(tab);
-	tab = 0;
+	va_start(list, t);
+	i = -1;
+	while (++i < s)
+		ft_free((void **)va_arg(list, void **));
+	i = -1;
+	while (++i < t)
+		ft_freetab((char **)va_arg(list, char **));
+	va_end(list);
 }

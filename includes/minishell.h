@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:22 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/21 12:01:41 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 00:36:43 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 # include "minitrees_structs.h"
 # include <dirent.h>
 # include <fcntl.h>
+# include <limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <sys/types.h>
-# include <limits.h>
 # include <sys/wait.h>
 
 # define SPACES " \t\n\v"
@@ -54,7 +54,7 @@ struct	dirent
 // split.c
 char	**ft_splitex(char const *s);
 // builtin.c
-int	ft_builtin(t_cmd *cmd, t_data *data);
+int		ft_builtin(t_cmd *cmd, t_data *data);
 // int		ft_builtin(char *s, char **env, char ***addr_env);
 // expand.c
 char	*ft_expand(char *s, char **env);
@@ -65,20 +65,32 @@ int		isaredirection(char *s);
 
 char	*ft_slash(char *path, char *cmd);
 void	dupnclose(int fd, int std);
-int	ft_lstadd_back_rr(t_rr **lst, t_rr *new);
+int		ft_lstadd_back_rr(t_rr **lst, t_rr  *var);
 t_rr	*ft_lstnewrr(char *content, int type);
 void	ft_printlist(t_rr *temp);
 char	*ft_wildcard(char *wildcards);
 char	*builtin_pwd(char *s);
 void	*ft_puterror(int flag, void *param);
 // exec
+int		exec_tree(t_btree *tree);
 char	*invert(char *str);
-	// utils
+// free_utils.c
+int		error_fd_bt(t_rr *node, t_data *data, t_cmd *cmd, int index);
 void	ft_freerr(t_rr *node);
 void	ft_errorcmd(t_data *data, t_cmd *cmd, t_rr *node, char *str);
+// utils.c
+void	ft_errorcmd_bt(t_data *data, t_cmd *cmd, t_rr *node, char *str);
+// files.c
+int		openfiles_bt(t_rr *node, t_data *data, t_cmd *cmd, int index);
+void	openfiles(t_rr *node, t_data *data, t_cmd *cmd, int index);
+// free_all.c
+void	free_all(int s, int t, ...);
+// space.c
 char	*ft_spacestr(char *str);
-	// error.c
+// error.c
 void	error_fd(t_rr *node, t_data *data, t_cmd *cmd, int index);
+// utils_exec.c
+void	exec_waitpid(t_data *data);
 
 // heredoc
 int		count_hd(char *str);

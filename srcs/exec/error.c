@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 06:24:49 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/21 12:13:33 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 01:12:56 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	error_fd(t_rr *node, t_data *data, t_cmd *cmd, int index)
 	else if (node->type != 4)
 		ft_printf("bash: %s: No such file or directory\n", node->content);
 	else
-		ft_printf("bash: %s: No such file or directory\n",
+		ft_printf("bash: %s: No such !file or directory\n",
 				data->filename[index]);
 	ft_errorcmd(data, cmd, cmd->redi, "");
 	close(data->fd[1]);

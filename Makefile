@@ -15,7 +15,8 @@ SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c signals.c \
 				trees/trees.c \
 				trees/print_tree/print_trees.c \
 				trees/print_tree/queues.c \
-				exec/exec.c exec/utils.c exec/freeutils.c exec/space.c exec/error.c \
+				exec/exec.c exec/utils.c exec/freeutils.c exec/space.c exec/error.c  exec/utils_exec.c \
+				exec/files.c exec/free_all.c \
 				builtins/cd.c  \
 				builtins/env_utils.c \
 				builtins/export.c \
@@ -63,6 +64,7 @@ $(DIR_OBJS):
 	mkdir -p objs/error_handler
 	mkdir -p objs/here_doc
 	mkdir -p objs/exec
+	mkdir -p here_doc/
 
 clean:
 	make clean -C libft

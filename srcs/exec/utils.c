@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 10:21:21 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/20 06:36:21 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 00:37:00 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,18 @@ void	dupnclose(int fd, int std)
 	close(fd);
 }
 
-int	ft_lstadd_back_rr(t_rr **lst, t_rr *new)
+int	ft_lstadd_back_rr(t_rr **lst, t_rr *var)
 {
 	t_rr	*begin;
 
 	begin = *lst;
 	if (!*lst)
-		*lst = new;
+		*lst = var;
 	else
 	{
 		while (begin->next)
 			begin = begin->next;
-		begin->next = new;
+		begin->next = var;
 	}
 	return (1);
 }

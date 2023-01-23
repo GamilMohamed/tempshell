@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/22 03:42:05 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 00:47:39 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ static int	builtin_cd(char *str, char ***addr_ev)
 	success = -1;
 	if (str)
 	{
-		tab = ft_split(str + 3f, ' ');
+		tab = ft_split(str + 2, ' ');
 		if (!tab)
 			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		success = ft_cd(tab, addr_ev);
@@ -158,22 +158,21 @@ static int	builtin_unset(char *str, char ***addr_ev)
 int	ft_builtin(t_cmd *cmd, t_data *data)
 {
 	ft_printf("cmd->cmd={%s}\n", cmd->cmd);
+	ft_printf("cmd->flags=[%s]\n", cmd->flags);
 	if (!cmd->cmd)
 		return (0);
-	if (!ft_strcmp(cmd->cmd, "pwd"))
+	if (!ft_strncmp(cmd->cmd, "pwd", 3))
 		return (builtin_pwd(cmd->cmd), 1);
 	if (!ft_strncmp(cmd->cmd, "echo", 4))
-		return (builtin_echo(cmd->cmd, data->env), 1);
-	// if (!ft_strcmp(cmd->cmd, "echo"))
-		// return (ft_printf("\n"));
-	if (!ft_strcmp(cmd->cmd, "env"))
-		return (builtin_env(cmd->cmd, data->env), 1);
-	if (!ft_strncmp(cmd->cmd, "cd ", 3) || !ft_strcmp(cmd->cmd, "cd"))
-		return (builtin_cd(cmd->cmd, &data->env), 1);
-	if (!ft_strncmp(cmd->cmd, "export ", 7) || !ft_strcmp(cmd->cmd, "export"))
-		return (builtin_export(cmd->cmd, &data->env), 1);
-	if (!ft_strncmp(cmd->cmd, "unset ", 6))
-		return (builtin_unset(cmd->cmd, &data->env), 1);
+		return (builtin_echo(cmd->flags, data->env), 1);
+	if (!ft_strncmp(cmd->cmd, "env", 3))
+		return (builtin_env(cmd->flags, data->env), 1);
+	if (!ft_strncmp(cmd->cmd, "cd", 3))
+		return (builtin_cd(cmd->flags, &data->env), 1);
+	if (!ft_strncmp(cmd->cmd, "export", 6))
+		return (builtin_export(cmd->flags, &data->env), 1);
+	if (!ft_strncmp(cmd->cmd, "unset", 5))
+		return (builtin_unset(cmd->flags, &data->env), 1);
 	// if (!ft_strcmp(cmd->cmd, "exit"))
 		// return (, exit(1), 1);
 	return (0);

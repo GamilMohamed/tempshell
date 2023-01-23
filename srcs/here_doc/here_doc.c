@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:07:10 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/20 06:11:27 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 01:14:13 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	get_len_word(char *str)
 		i++;
 		r++;
 	}
-	// ft_printf("len delimiter=%i\n", r);
 	return (r);
 }
 
@@ -42,12 +41,8 @@ char	*get_word(char *str)
 	while (str[i] && ft_isspace(str[i]))
 		i++;
 	while (str[i] && !ft_isspace(str[i]))
-	{
-		// ft_printf("->%c\n", str[i]);
 		new[r++] = str[i++];
-	}
 	new[r] = 0;
-	// printf("new=%s\n", new);
 	return (new);
 }
 
@@ -97,11 +92,10 @@ static char	**ft_getdelims(char *str)
 		i++;
 	}
 	tab[nb] = 0;
-	// ft_printtab(tab);
 	return (tab);
 }
 
-static char	*openfiles(int index, t_data *data)
+static char	*openfileshd(int index, t_data *data)
 {
 	char	*s;
 	int		fd;
@@ -114,10 +108,8 @@ static char	*openfiles(int index, t_data *data)
 			break ;
 		ft_putendl_fd(s, fd);
 		free(s);
-		ft_printf("JE SUIS PASSE PAR LA\n");
 	}
 	close(fd);
-	// ft_printf("fd=%i\n", fd);
 	return (NULL);
 }
 
@@ -150,6 +142,8 @@ char	*here_doc(t_data *data, char *str)
 	data->here_docs = ft_getdelims(str);
 	nbhere = count_hd(str);
 	data->filename = ft_getnames(data, str, nbhere);
+	ft_printf("DATA FILENAME\n");
+	ft_printtab(data->filename);
 	if (!nbhere)
 		return (NULL);
 	signal(SIGINT, SIG_IGN);
@@ -161,7 +155,7 @@ char	*here_doc(t_data *data, char *str)
 		i = -1;
 		while (++i < nbhere)
 		{
-			openfiles(i, data);
+			openfileshd(i, data);
 			free(data->filename[i]);
 		}
 		free(data->filename);
@@ -173,7 +167,6 @@ char	*here_doc(t_data *data, char *str)
 	{
 	}
 	signal(SIGINT, &ctrlc);
-	// ft_printf("here_doc made = %i\n", nbhere);
 	waitpid(pid, &r, 0);
 	return (str);
 }

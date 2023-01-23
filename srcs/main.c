@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/22 01:56:24 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/23 00:37:55 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 char	*prompt(t_data *data)
 {
 	char	*str;
-	char	*s;
 	char	prompt[PATH_MAX];
 	char	**tab;
 	int		count;
@@ -34,44 +33,49 @@ char	*prompt(t_data *data)
 	ft_strcat(prompt, "\001\033[0m\002:");
 	ft_free((void **)&str);
 	ft_freetab(tab);
-	s = readline(prompt);
-	return (s);
+	return (readline(prompt));
 }
 
-int	exec(char **env, t_data *data)
+int	syntax(t_data *data, char *str)
+{
+	if (!*str)
+		return (1);
+	if (checksyntax(str) || checkquotes(str))
+	{
+		data->status = 2;
+		return (1);
+	}
+	if (!*str || !ft_strcmp(str, "exit"))
+	{
+		data->status = 0;
+		return (2);
+	}
+	return (0);
+}
+
+int	exec(t_data *data)
 {
 	char	*str;
 	int		fd;
 	t_btree	*tree;
 
-	data->env = ft_copy_tab(env);
 	while (1)
 	{
 		str = prompt(data);
-		// str = readline(data->prompt);
-		ft_free((void **)&data->prompt);
 		fd = open("history.txt", O_RDWR | O_CREAT | O_APPEND, 0644);
 		ft_putendl_fd(str, fd);
-		add_history(str);
 		close(fd);
 		if (!str)
+			break ;
+		add_history(str);
+		if (syntax(data, str) == 1)
+			continue ;
+		if (syntax(data, str) == 2)
 			break ;
 		if (!ft_strcmp(str, "echo $?"))
 		{
 			printf("%i\n", data->status);
 			continue ;
-		}
-		if (checkquotes(str) || checksyntax(str))
-		{
-			data->status = 2;
-			continue ;
-		}
-		// if (ft_builtin(str, data->env, &data->env))
-		// 	continue ;
-		if (!str || !*str || !ft_strcmp(str, "exit"))
-		{
-			data->status = 0;
-			break ;
 		}
 		here_doc(data, str);
 		str = ft_expand(str, data->env);
@@ -80,18 +84,18 @@ int	exec(char **env, t_data *data)
 		if (tree)
 		{
 			print_tree(tree, 2);
-			exec_tree(tree, STDIN_FILENO, STDOUT_FILENO);
+			exec_tree(tree);
 			free_tree(tree);
 		}
-		ft_freetab(data->filename);
-		ft_freetab(data->here_docs);
+		free_all(0, 2, data->filename, data->here_docs);
 	}
+	free_all(2, 2, &data->prompt, &str, data->path, data->env);
 	ft_printf("exit\n");
-	ft_free((void **)&data->prompt);
+	// ft_free((void **)&data->prompt);
 	rl_clear_history();
-	ft_free((void **)&str);
-	ft_freetab(data->path);
-	ft_freetab(data->env);
+	// ft_free((void **)&str);
+	// ft_freetab(data->path);
+	// ft_freetab(data->env);
 	return (0);
 }
 
@@ -106,9 +110,9 @@ int	main(int ac, char **av, char **env)
 	// if(!isatty(STDIN_FILENO))
 	// 	data.tty = 1;
 	ft_memset(&data, 0, sizeof(t_data));
-	// data.env = env;
 	data.prev_pipes = -1;
-	exec(env, &data);
+	data.env = ft_copy_tab(env);
+	exec(&data);
 	exit(data.status);
 }
 

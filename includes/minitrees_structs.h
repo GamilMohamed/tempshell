@@ -38,6 +38,7 @@ typedef struct s_data
 	int				fd[2];
 	int				status;
 	int				tty;
+	int				nbcmd;
 	// bool			on;
 	char			**here_docs;
 	char			**filename;
