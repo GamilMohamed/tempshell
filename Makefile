@@ -17,13 +17,14 @@ SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c signals.c \
 				trees/print_tree/print_trees.c \
 				trees/print_tree/queues.c \
 				exec/exec.c exec/utils.c exec/freeutils.c exec/space.c exec/error.c  exec/utils_exec.c \
+				exec/exec_parse.c exec/fork.c \
 				exec/files.c exec/free_all.c \
 				builtins/cd.c  \
 				builtins/env_utils.c \
 				builtins/export.c \
 				error_handler/error.c \
 				builtins/unset.c \
-				here_doc/here_doc.c
+				here_doc/here_doc.c here_doc/utils.c
 
 
 OBJS_NAMES		=	${SRCS_NAMES:.c=.o}

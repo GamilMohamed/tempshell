@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 12:54:03 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 16:58:09 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ static int	builtin_echo(char *s, char **env)
 
 char	*builtin_pwd(char *s)
 {
-	char 	buff[PATH_MAX];
+	char	buff[PATH_MAX];
 
 	if (getcwd(buff, sizeof(buff)) == NULL)
 		printf("error: %s", strerror(errno));
@@ -172,7 +172,7 @@ int	ft_builtin(t_cmd *cmd, t_data *data)
 	if (!ft_strncmp(cmd->cmd, "unset", 5))
 		return (builtin_unset(cmd->flags, &data->env), 1);
 	// if (!ft_strcmp(cmd->cmd, "exit"))
-		// return (, exit(1), 1);
+	// return (, exit(1), 1);
 	return (0);
 }
 

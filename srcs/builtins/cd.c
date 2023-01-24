@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/15 17:47:54 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/24 13:01:09 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 13:32:42 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*get_homepath(char **av, char **ev)
 {
 	char	*new_pwd;
 
-	if (!ev)
+	if (!ft_ev_getvar("HOME", ev))
 		return (ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO), NULL);
 	new_pwd = ft_strchr(ft_ev_getvar("HOME", ev), '=') + 1;
 	if (new_pwd == NULL)
@@ -47,6 +47,8 @@ char	*ft_getpath(char **av, char **ev)
 		return (get_homepath(av, ev));
 	else if (!ft_strcmp(av[0], "-"))
 	{
+		if (!ft_ev_getvar("OLDPWD", ev))
+			return (NULL);
 		new_pwd = ft_strchr(ft_ev_getvar("OLDPWD", ev), '=') + 1;
 		if (new_pwd)
 		{
@@ -94,6 +96,8 @@ int	ft_cd(char **av, char ***addr_ev)
 
 	new_pwd = ft_getpath(av, *addr_ev);
 	errno = 0;
+	if (av && av[1] && av[2])
+		return (ft_printf("bash: cd : too many arguments\n"));
 	if (change_directory(new_pwd, addr_ev) || errno)
 	{
 		ft_putstr_fd("bash: cd: ", STDERR_FILENO);

@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 04:01:39 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 09:27:28 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:16:07 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	ft_freerr(t_rr *node)
 
 	while (node)
 	{
-		ft_free((void **)& node->content);
+		ft_free((void **)&node->content);
 		temp = node->next;
-		ft_free((void **)& node);
+		ft_free((void **)&node);
 		node = temp;
 	}
 }
@@ -30,13 +30,9 @@ void	ft_errorcmd(t_data *data, t_cmd *cmd, t_rr *node, char *str)
 	ft_free((void **)&cmd->flags);
 	ft_free((void **)&cmd->cmd);
 	ft_freetab(data->path);
-	// freestruct(data);
-	// ft_freetab(data->here->here_docs);
-	// ft_freetab(data->here->filename);
 	ft_freetab(data->split);
 	ft_freetab(data->env);
 	ft_freerr(node);
-
 }
 
 void	ft_errorcmd_bt(t_data *data, t_cmd *cmd, t_rr *node, char *str)

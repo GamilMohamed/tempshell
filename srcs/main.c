@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 12:50:53 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 22:18:03 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,39 +35,40 @@ char	*prompt(t_data *data)
 	return (readline(prompt));
 }
 
-char	*ft_quote(char *str)
-{
-	int		i;
-	int		r;
-	int		quote;
-	char	*new;
-	char	*ret;
+// char	*ft_quote(char *str)
+// {
+// 	int		i;
+// 	int		r;
+// 	int		quote;
+// 	char	*new;
+// 	char	*ret;
 
-	i = 0;
-	r = 0;
-	new = malloc(ft_strlen(str) + 1);
-	while (str[i])
-	{
-		while (str[i] && str[i] == SQUOTE || str[i] == DQUOTE)
-		{
-			quote = str[i++];
-			while (str[i] && str[i] != quote)
-			{
-				if (ft_strchr("\t\v\n >|<", str[i]))
-					str[i] = -str[i];
-				new[r++] = str[i++];
-			}
-			i++;
-		}
-		if (!str[i])
-			break;
-		new[r++] = str[i++];
-	}
-	new[r] = 0;
-	ret = ft_strdup(new);
-	free_all(2, 0, & new, & str);
-	return (ret);
-}
+// 	i = 0;
+// 	r = 0;
+// 	new = malloc(ft_strlen(str) + 1);
+// 	while (str[i])
+// 	{
+// 		while (str[i] && str[i] == SQUOTE || str[i] == DQUOTE)
+// 		{
+// 			quote = str[i++];
+// 			// new[r++] = ' ';
+// 			while (str[i] && str[i] != quote)
+// 			{
+// 				if (ft_strchr("\t\v\n >|<", str[i]))
+// 					str[i] = -str[i];
+// 				new[r++] = str[i++];	
+// 			}
+// 			i++;
+// 		}
+// 		if (!str[i])
+// 			break ;
+// 		new[r++] = str[i++];
+// 	}
+// 	new[r] = 0;
+// 	ret = ft_strdup(new);
+// 	free_all(2, 0, &new, &str);
+// 	return (ret);
+// }
 
 int	syntax(t_data *data, char *str)
 {
@@ -86,10 +87,33 @@ int	syntax(t_data *data, char *str)
 	return (0);
 }
 
+void	pre_exec(t_data *data)
+{
+	t_btree	*tree;
+	t_btree	*temp;
+	int		i;
+
+	data->str = ft_expand(data->str, data->env);
+	here_doc(data, data->str);
+	tree = get_tree(data->str, data->env, data);
+	ft_free((void **)&data->str);
+	if (tree)
+	{
+		temp = tree;
+		// print_tree(tree, 2);
+		exec_tree(tree, temp);
+		free_tree(tree);
+	}
+	i = -1;
+	while (++i < data->nb_here)
+		close(data->here[i].pipe[0]);
+	freestruct(data);
+	ft_freetab(data->path);
+	ft_getenv(data->env, data);
+}
+
 int	exec(t_data *data)
 {
-	char	*str;
-	t_btree	*tree;
 	t_here	here;
 
 	while (1)
@@ -97,41 +121,22 @@ int	exec(t_data *data)
 		data->str = prompt(data);
 		if (!data->str)
 			break ;
-		if (!*data->str)
-			continue;
 		add_history(data->str);
 		if (syntax(data, data->str) == 1)
 			continue ;
 		if (syntax(data, data->str) == 2)
 			break ;
-		// if (!ft_strcmp(data->str, "echo $?"))
-		// {
-		// 	printf("%i\n", data->status);
-		// 	continue ;
-		// }
-		data->str = ft_quote(data->str);
-		data -> here = & here;
-		here_doc(data, data->str);
-		tree = get_tree(data->str, data->env, data);
-		ft_free((void **)& data->str);
-		if (tree)
+		if (!ft_strcmp(data->str, "echo $?"))
 		{
-			t_btree *temp = tree;
-			print_tree(tree, 2);
-			exec_tree(tree, temp);
-			free_tree(tree);
+			printf("%i\n", data->status);
+			continue ;
 		}
-		for (int index = 0; index < data->nb_here; index++)
-			close(data->here[index].pipe[0]);
-		freestruct(data);
-		free_all(0, 1, data->path);
-		ft_getenv(data->env, data);
-		ft_printf("MAIN data->here : %p\n", data->here);
+		data->here = &here;
+		pre_exec(data);
 	}
-	// freestruct(data);
 	free_all(1, 2, &data->str, data->path, data->env);
 	ft_printf("exit\n");
-	clear_history();
+	rl_clear_history();
 	return (0);
 }
 

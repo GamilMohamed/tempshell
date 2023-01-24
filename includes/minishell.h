@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:22 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 12:30:08 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:34:30 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,18 @@ void	*ft_puterror(int flag, void *param);
 // exec
 int		exec_tree(t_btree *tree, t_btree *head);
 char	*invert(char *str);
+int	exec_builtin(t_cmd *cmd, t_data *data);
+void	execute(t_data *data, t_cmd *cmd, int boolean);
+
+//fork.c
+void	ft_child(t_btree *tree, t_btree *head, t_cmd *cmd, int index);
+void	ft_father(t_btree *tree, t_btree *head, t_cmd *cmd);
+void	forker(t_btree *tree, t_btree *head, t_cmd *cmd, int i);
+void	forking(t_data *data, int index, int max, t_cmd *cmd);
+// exec_parse.c
+char	*checkstring(t_cmd *cmd, char *str);
+void	flags_wild(t_cmd *cmd, char *tab);
+
 // free_utils.c
 int		error_fd_bt(t_rr *node, t_data *data, t_cmd *cmd, int index);
 void	ft_freerr(t_rr *node);
@@ -91,16 +103,23 @@ void	freestruct(t_data *data);
 char	*ft_spacestr(char *str);
 // error.c
 void	error_fd(t_rr *node, t_data *data, t_cmd *cmd, int index);
+void	execve_error(t_data *data, char *str, char **tab, int boolean);
 // utils_exec.c
 void	exec_waitpid(t_data *data);
+void	dupnclose(int fd, int std);
+int		matching(char *match);
 
 // heredoc
-int		count_hd(char *str);
 t_here	*here_doc(t_data *data, char *str);
+// utils.c
+int		get_len_word(char *str);
+char	*get_word(char *str);
+int		count_hd(char *str);
+
 // char	*here_doc(t_here *here, t_data *data, char *str);
 // char	*here_doc(t_data *data, char *str);
 void	antislash(int sig);
-t_data    *starton(void);
+t_data	*starton(void);
 void	ctrlc(int sig);
 
 // signal.c

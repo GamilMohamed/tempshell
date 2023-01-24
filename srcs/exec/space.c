@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 20:44:09 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/19 20:28:14 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:17:21 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int	ft_spacestrlen(char *str)
 		}
 		else if (forward < 0)
 		{
-			if (!ft_iswhitespace(*str)
-				&& (*(str + 1) == '>' || *(str + 1) == '<'))
+			if (!ft_iswhitespace(*str) && (*(str + 1) == '>' || *(str
+						+ 1) == '<'))
 				len++;
 			len++;
 			str++;
@@ -63,8 +63,8 @@ int	ft_spacestrlen(char *str)
 
 void	ft_spacestr_treatment(char **addr_str, char *newstr, int *addr_i)
 {
-	int	i;
-	int	forward;
+	int		i;
+	int		forward;
 	char	*str;
 
 	i = *addr_i;
@@ -80,8 +80,8 @@ void	ft_spacestr_treatment(char **addr_str, char *newstr, int *addr_i)
 	else if (forward < 0)
 	{
 		newstr[i++] = *str;
-		if (!ft_iswhitespace(*str)
-			&& (*(str)) && (*(str + 1) == '>' || *(str + 1) == '<'))
+		if (!ft_iswhitespace(*str) && (*(str)) && (*(str + 1) == '>' || *(str
+					+ 1) == '<'))
 			newstr[i++] = ' ';
 		str++;
 	}
@@ -100,12 +100,12 @@ char	*ft_spacestr(char *str)
 	cpy = str;
 	if (!cpy)
 		return (NULL);
-	newstr = malloc(sizeof (*newstr) * (ft_spacestrlen(cpy) + 1));
-	if (newstr == NULL) 
+	newstr = malloc(sizeof(*newstr) * (ft_spacestrlen(cpy) + 1));
+	if (newstr == NULL)
 		return (ft_puterror(FAILED_MALLOC, NULL), NULL);
 	i = 0;
 	while (*cpy)
 		ft_spacestr_treatment(&cpy, newstr, &i);
-	ft_free((void **) & str);
+	ft_free((void **)&str);
 	return (newstr);
 }

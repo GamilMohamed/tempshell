@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 10:21:21 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/23 00:37:00 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 22:34:10 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,6 @@ char	*ft_slash(char *path, char *cmd)
 		var[i + x] = cmd[x];
 	var[i + x] = '\0';
 	return (var);
-}
-
-void	dupnclose(int fd, int std)
-{
-	dup2(fd, std);
-	close(fd);
 }
 
 int	ft_lstadd_back_rr(t_rr **lst, t_rr *var)
@@ -74,8 +68,8 @@ void	ft_printlist(t_rr *temp)
 	head = temp;
 	while (head)
 	{
-		ft_printf("[%i]", head->type);
-		ft_printf("%s\n", head->content);
+		fprintf(stderr, "[%i]", head->type);
+		fprintf(stderr, "%s\n", head->content);
 		head = head->next;
 	}
 }

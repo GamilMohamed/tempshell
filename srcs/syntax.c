@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 00:14:05 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/23 08:40:31 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:49:33 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,15 @@ int	checksyntax(char *s)
 	i = -1;
 	while (METACHAR[++i])
 		if (METACHAR[i] == temp[len - 1])
-		{
-			return (free(temp), free(s), printf("bash: syntax error near unexpected token '%c'!\n",
+			return (free(temp), free(s),
+				ft_printf("bash: syntax error near unexpected token '%c'!\n",
 					METACHAR[i]));
-		}
 	i = 1;
 	while (METACHAR[++i])
 		if (METACHAR[i] == temp[0])
-		{
-			return (free(temp), free(s), printf("bash: syntax error near unexpected token '%c'!\n",
+			return (free(temp), free(s),
+				ft_printf("bash: syntax error near unexpected token '%c'!\n",
 					METACHAR[i]));
-		}
 	if (checkagain(temp, len))
 		return (free(s), 1);
 	free(temp);
@@ -86,12 +84,10 @@ int	checkagain(char *temp, int len)
 		j = -1;
 		while (temp[++j])
 			if (temp[j] == METACHAR[i])
-				return (free(temp), printf("bash: syntax error near unexpected token '%c'\n", METACHAR[i]));
+				return (free(temp),
+					printf("bash: syntax error near unexpected token '%c'\n",
+						METACHAR[i]));
 	}
-	// if (ft_strnstr(temp, "||", len))
-	// 	return (free(temp), printf("syntax error '||' !\n"));
-	// if (ft_strnstr(temp, "&&", len))
-		// return (free(temp), printf("syntax error '&&' !\n"));
 	return (0);
 }
 

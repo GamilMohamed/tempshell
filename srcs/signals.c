@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 06:17:04 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 11:53:52 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 17:01:29 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,20 @@ void	antislash(int sig)
 		exit(130);
 }
 
-void    ctrlc(int sig)
+void	ctrlc(int sig)
 {
-    if (sig == SIGINT)
-    {
-        printf("\n");
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-    }
+	if (sig == SIGINT)
+	{
+		ft_printf("\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
 
-t_data    *starton()
+t_data	*starton(void)
 {
-    static t_data data;
+	static t_data	data;
 
-    return (& data);
+	return (&data);
 }
