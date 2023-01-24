@@ -10,7 +10,7 @@ SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c signals.c \
 				rpn/rpn_algo.c \
 				rpn/rpn_basics.c \
 				rpn/rpn_pop_utils.c \
-				rpn/rpn_utils.c \
+				rpn/rpn_utils.c rpn/rpn_algo_bis.c \
 				trees/make_tree.c \
 				trees/trees.c \
 				trees/print_tree/print_trees.c \
@@ -65,7 +65,6 @@ $(DIR_OBJS):
 	mkdir -p objs/here_doc
 	mkdir -p objs/exec
 	mkdir -p here_doc/
-	mkdir -p error_handler/
 
 clean:
 	make clean -C libft
