@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/15 17:47:54 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/19 20:28:14 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 13:01:09 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ char	*get_homepath(char **av, char **ev)
 {
 	char	*new_pwd;
 
+	if (!ev)
+		return (ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO), NULL);
 	new_pwd = ft_strchr(ft_ev_getvar("HOME", ev), '=') + 1;
 	if (new_pwd == NULL)
 		ft_putstr_fd("bash: cd: HOME not set\n", STDERR_FILENO);

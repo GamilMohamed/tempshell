@@ -11,6 +11,7 @@ SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c signals.c \
 				rpn/rpn_basics.c \
 				rpn/rpn_pop_utils.c \
 				rpn/rpn_utils.c rpn/rpn_algo_bis.c \
+				parsing/is_something.c	parsing/parsing.c  parsing/parsing_utils.c\
 				trees/make_tree.c \
 				trees/trees.c \
 				trees/print_tree/print_trees.c \
@@ -61,6 +62,7 @@ $(DIR_OBJS):
 	mkdir -p objs/trees/print_tree
 	mkdir -p objs/rpn
 	mkdir -p objs/builtins
+	mkdir -p objs/parsing
 	mkdir -p objs/error_handler
 	mkdir -p objs/here_doc
 	mkdir -p objs/exec

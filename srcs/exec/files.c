@@ -3,15 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   files.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 20:08:30 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/23 07:55:27 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 07:56:48 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static
+int	get_pipe(t_here *here, t_data *data, char *str)
+{
+	int i = -1;
+
+	while (++i < data->nb_here)
+	{
+		if (!ft_strcmp(data->here[i].delim, str))
+			return(here[i].pipe[0]);
+	}
+	return (-1);
+}
 
 int	openfiles_bt(t_rr *node, t_data *data, t_cmd *cmd, int index)
 {
@@ -28,7 +40,7 @@ int	openfiles_bt(t_rr *node, t_data *data, t_cmd *cmd, int index)
 		else if (node->type == 3) // <
 			fd = open(node->content, O_RDONLY);
 		else if (node->type == 4) // <<
-			fd = open(data->here->filename[data->here->hd++], O_RDONLY);
+			fd = get_pipe(data->here, data, node->content);
 		if (fd == -1)
 			if (error_fd_bt(node, data, cmd, index))
 				return (1);
@@ -56,7 +68,7 @@ void	openfiles(t_rr *node, t_data *data, t_cmd *cmd, int index)
 		else if (node->type == 3) // <
 			fd = open(node->content, O_RDONLY);
 		else if (node->type == 4) // <<
-			fd = open(data->here->filename[data->here->hd++], O_RDONLY);
+			fd = get_pipe(data->here, data, node->content);
 		if (fd == -1)
 			error_fd(node, data, cmd, index);
 		if (node->type > 2)

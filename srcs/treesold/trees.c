@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   trees.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:54:00 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/22 01:34:47 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/13 23:14:46 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,7 @@ t_btree	*new_tree(void *node, t_data *data)
 	if (!t)
 		return (NULL);
 	t->node = ft_strndup((char *)node, -1);
-	if (!t->node)
-		return (free(t), ft_puterror(FAILED_MALLOC, (char *)"new_tree"), NULL);
 	t->data = data;
-	t->l = NULL;
-	t->r = NULL;
 	return (t);
 }
 
@@ -35,8 +31,7 @@ void	add_left(t_btree **tree, t_btree *left_son)
 	t = *tree;
 	if (t == NULL)
 		*tree = left_son;
-	else
-		t->l = left_son;
+	t->l = left_son;
 }
 
 void	add_right(t_btree **tree, t_btree *right_son)
@@ -46,21 +41,15 @@ void	add_right(t_btree **tree, t_btree *right_son)
 	t = *tree;
 	if (t == NULL)
 		*tree = right_son;
-	else
-		t->r = right_son;
+	t->l = right_son;
 }
 
-void	*free_tree(t_btree *t)
+void	free_tree(t_btree *t)
 {
-	if (t)
-	{
-		if (t->r)
-			free_tree(t->r);
-		if (t->l)
-			free_tree(t->l);
-		if (t->node)
-			free(t->node);
-		free(t);
-	}
-	return (NULL);
+	if (t->r)
+		free_tree(t->r);
+	if (t->l)
+		free_tree(t->l);
+	free(t->node);
+	free(t);
 }

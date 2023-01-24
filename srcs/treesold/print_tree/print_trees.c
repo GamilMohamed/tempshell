@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:54:00 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/19 11:26:57 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/13 02:16:09 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	bfs(t_queue **trees, t_queue **to_print)
 		t = pop(trees);
 		add_queue(to_print, new_queue(t->node, id));
 		if (t->l)
-			add_queue(trees, new_queue(t->l, 2 * id));
+			add_queue(trees, new_queue(t->l, 2*id));
 		if (t->r)
-			add_queue(trees, new_queue(t->r, 2 * id + 1));
+			add_queue(trees, new_queue(t->r, 2*id + 1));
 		bfs(trees, to_print);
 	}
 }
@@ -87,8 +87,8 @@ void	print_print(t_queue *to_print, int node_size)
 
 void	print_tree(t_btree *t, int node_size)
 {
-	t_queue	*trees;
-	t_queue	*to_print;
+	t_queue *trees;
+	t_queue *to_print;
 
 	(void) node_size;
 	trees = new_queue((t_btree *)t, 1);
@@ -109,6 +109,7 @@ a b | c && d e || ||
    a b
 
 */
+
 
 //                              01                              
 //              02                              03              

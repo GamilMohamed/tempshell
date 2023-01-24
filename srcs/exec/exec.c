@@ -3,62 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/23 08:43:03 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 12:48:09 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "minitrees.h"
-
-static char	*ft_whichchar(char *tab, int r, char quote)
-{
-	int		i;
-	int		j;
-	char	*new;
-
-	new = malloc(sizeof(char) * (r + 1)); // check malloc
-	j = -1;
-	i = 0;
-	while (tab[++j])
-	{
-		if (tab[j] != quote)
-			new[i++] = tab[j];
-	}
-	new[i] = 0;
-	return (new);
-}
-
-static char	**ft_stripchar(char **tab, int count)
-{
-	char	**new;
-	char	quote;
-	int		i;
-	int		j;
-	int		r;
-
-	new = malloc(sizeof(char *) * (count + 1)); // check malloc
-	i = -1;
-	while (tab[++i])
-	{
-		r = 0;
-		j = -1;
-		quote = 0;
-		while (tab[i][++j])
-		{
-			if (ft_checkchars(tab[i][j], SPACE, SQUOTE, DQUOTE) > 1 && !quote)
-				quote = tab[i][j];
-			if (tab[i][j] != quote)
-				r++;
-		}
-		new[i] = ft_whichchar(tab[i], r, quote); // check malloc
-	}
-	ft_freetab(tab);
-	new[i] = 0;
-	return (new);
-}
 
 void	execute(t_data *data, t_cmd *cmd, int boolean)
 {
@@ -70,15 +23,11 @@ void	execute(t_data *data, t_cmd *cmd, int boolean)
 	i = -1;
 	data->status = 0;
 	tab = ft_split(cmd->flags, ' ');
-	count = ft_countdelim(cmd->flags, ' ');
-	tab = ft_stripchar(tab, count);
 	while (tab[++i])
 		tab[i] = invert(tab[i]);
 	i = -1;
 	cmd->cmd = invert(cmd->cmd);
-	if (!data->env[0])
-		ft_printf("%s: command not found\n", cmd->cmd);
-	while (boolean && data->path[++i])
+	while (boolean && data->path && data->path[++i])
 	{
 		temp = ft_slash(data->path[i], cmd->cmd);
 		if (access(temp, F_OK | X_OK) != -1)
@@ -98,6 +47,23 @@ void	execute(t_data *data, t_cmd *cmd, int boolean)
 	ft_freetab(tab);
 }
 
+int	matching(char *match)
+{
+	int	i;
+
+	if (!match)
+		return (0);
+	static const char *matchs[7] = {
+		"cd", "echo", "exit", "export", "pwd", "unset", "env"};
+	i = 0;
+	while (i < 7)
+	{
+		if (!ft_strcmp(matchs[i++], match))
+			return (1);
+	}
+	return (0);
+}
+
 void	forking(t_data *data, int index, int max, t_cmd *cmd)
 {
 	if (index != max - 1) // 0 1 2 3
@@ -107,7 +73,12 @@ void	forking(t_data *data, int index, int max, t_cmd *cmd)
 	openfiles(cmd->redi, data, cmd, index);
 	close(data->fd[1]);
 	close(data->fd[0]);
-	if (cmd->cmd)
+	if (matching(cmd->cmd))
+	{
+		ft_builtin(cmd, data);
+		exit(1);
+	}
+	else if (cmd->cmd)
 		execute(data, cmd, !(ft_strchr(cmd->cmd, '/')));
 }
 
@@ -116,7 +87,7 @@ void	flags_wild(t_cmd *cmd, char *tab)
 	char	*wild;
 
 	wild = 0;
-	cmd -> flags = ft_realloc(cmd->flags, " ");
+	cmd->flags = ft_realloc(cmd->flags, " ");
 	if (ft_strchr(tab, '*'))
 	{
 		wild = ft_wildcard(tab);
@@ -149,33 +120,18 @@ char	*checkstring(t_cmd *cmd, char *str)
 		else if (!isaredirection(tab[i]))
 			flags_wild(cmd, tab[i]);
 		else
-			i += ft_lstadd_back_rr(&cmd->redi, ft_lstnewrr(ft_strdup(tab[i + 1]), isaredirection(tab[i])));
+			i += ft_lstadd_back_rr(&cmd->redi, ft_lstnewrr(ft_strdup(tab[i
+							+ 1]), isaredirection(tab[i])));
 	}
-	// ft_printlist(cmd->redi);
 	ft_freetab(tab);
 	return (NULL);
-}
-
-int	matching(char *match)
-{
-	int	i;
-
-	static const char *matchs[7] = {
-		"cd", "echo", "exit", "export", "pwd", "unset", "env"};
-	i = 0;
-	while (i < 7)
-	{
-		if (!ft_strcmp(matchs[i++], match))
-			return (1);
-	}
-	return (0);
 }
 
 int	exec_builtin(t_cmd *cmd, t_data *data)
 {
 	int	copyfd;
 
-	if (!cmd->cmd || !matching(cmd->cmd))
+	if (!matching(cmd->cmd))
 		return (0);
 	copyfd = dup(STDOUT_FILENO);
 	if (openfiles_bt(cmd->redi, data, cmd, 0))
@@ -186,7 +142,7 @@ int	exec_builtin(t_cmd *cmd, t_data *data)
 	}
 	ft_builtin(cmd, data);
 	dup2(copyfd, STDOUT_FILENO);
-	free_all(2, 1, & cmd->flags, & cmd->cmd, data->split);
+	free_all(2, 1, &cmd->flags, &cmd->cmd, data->split);
 	ft_freerr(cmd->redi);
 	close(data->fd[0]);
 	close(data->fd[1]);
@@ -194,27 +150,39 @@ int	exec_builtin(t_cmd *cmd, t_data *data)
 	return (1);
 }
 
-int	exec_command(t_btree *tree)
+void	printstruct(t_cmd *cmd, void *str, t_data *data, int index)
+{
+	ft_printf("\t %rnode%0 : [%s] (%g%i%0 cmds)\n", str, data->nbcmd);
+	ft_printf("\t\t %bstruct of part%0 : [%s]\n", data->split[index]);
+	ft_printf("COMMAND NAME={%m%s%0}\n", cmd->cmd);
+	ft_printf("COMMAND FLAGS={%m%s%0}\n", cmd->flags);
+	ft_printf("COMMAND REDI\n");
+	ft_printlist(cmd->redi);
+	// ft_printf("COMMAND HD_DELIM\n");
+	// ft_printtab(data->here->here_docs);
+	// ft_printf("COMMAND HD_FILENAME\n");
+	// ft_printtab(data->here->filename);
+}
+
+int	exec_command(t_btree *tree, t_btree *head)
 {
 	int			i;
 	char		**tab;
 	t_cmd		cmd;
 	char		*temp;
 	int			status;
-	static int	var;
 
-	var = 0;
+	temp = ft_expand(tree->node, tree->data->env);
 	ft_bzero(&cmd, sizeof(t_cmd));
-	tree->data->split = ft_split(tree->node, '|');
-	tree->data->nbcmd = ft_countdelim(tree->node, '|');
+	tree->data->split = ft_split(temp, '|');
+	tree->data->nbcmd = ft_countdelim(temp, '|');
+	free(temp);
 	i = -1;
 	while (++i < tree->data->nbcmd) // < tree->data->nbcmd)
 	{
 		tree->data->split[i] = ft_spacestr(tree->data->split[i]);
 		checkstring(&cmd, tree->data->split[i]);
-		printf("[%s]\n", cmd.cmd);
-		ft_printtab(tree->data->filename);
-		ft_printf("stop\n");
+		printstruct(& cmd, tree->node, tree->data, i);
 		pipe(tree->data->fd);
 		if (tree->data->nbcmd == 1 && exec_builtin(&cmd, tree->data))
 			return (0);
@@ -226,7 +194,10 @@ int	exec_command(t_btree *tree)
 			signal(SIGQUIT, &antislash);
 			forking(tree->data, i, tree->data->nbcmd, &cmd);
 			ft_errorcmd(tree->data, &cmd, cmd.redi, "");
-			exit(tree->data->status);
+			freestruct(tree->data);
+			status = tree->data->status;
+			free_tree(head);
+			exit(status);
 		}
 		else
 		{
@@ -234,36 +205,36 @@ int	exec_command(t_btree *tree)
 			if (tree->data->prev_pipes != -1)
 				close(tree->data->prev_pipes);
 			tree->data->prev_pipes = tree->data->fd[0];
-			free_all(2, 0, & cmd.cmd, & cmd.flags);
+			free_all(2, 0, &cmd.cmd, &cmd.flags);
 			ft_freerr(cmd.redi);
 			signal(SIGQUIT, SIG_IGN);
 		}
 	}
-	free_all(1, 1, & cmd.flags, tree->data->split);
+	free_all(1, 1, &cmd.flags, tree->data->split);
 	close(tree->data->fd[0]);
 	exec_waitpid(tree->data);
 	signal(SIGINT, &ctrlc);
 	return (0);
 }
 
-int	exec_tree(t_btree *tree)
+int	exec_tree(t_btree *tree, t_btree *head)
 {
 	tree->data->prev_pipes = -1;
 	if (!ft_strcmp((char *)tree->node, "||"))
 	{
 		tree->data->prev_pipes = -1;
-		exec_tree(tree->l);
+		exec_tree(tree->l, head);
 		if (tree->data->status)
-			return (exec_tree(tree->r));
+			return (exec_tree(tree->r, head));
 		return (0);
 	}
 	else if (!ft_strcmp((char *)tree->node, "&&"))
 	{
 		tree->data->prev_pipes = -1;
-		exec_tree(tree->l);
+		exec_tree(tree->l, head);
 		if (!tree->data->status)
-			return (exec_tree(tree->r));
+			return (exec_tree(tree->r, head));
 		return (1);
 	}
-	return (exec_command(tree));
+	return (exec_command(tree, head));
 }

@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/23 00:47:39 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/24 12:54:03 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	builtin_env(char *str, char **env)
 
 	i = -1;
 	while (env[++i])
-		ft_printf("%s\n", env[i]);
+		fprintf(stdout, "%s\n", env[i]);
 	return (1);
 }
 
@@ -75,7 +75,7 @@ static int	builtin_echo(char *s, char **env)
 
 	i = 0;
 	opt = 0;
-	tab = ft_splitex(s); // check malloc
+	tab = ft_split(s, ' '); // check malloc
 	i = builtin_echo_opt(tab, &opt);
 	while (tab[++i])
 	{
@@ -129,7 +129,7 @@ static int	builtin_export(char *str, char ***addr_ev)
 	success = -1;
 	if (str)
 	{
-		tab = ft_split(str + 7, ' ');
+		tab = ft_split(str + 6, ' ');
 		if (!tab)
 			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		success = ft_export(tab, addr_ev);
@@ -157,8 +157,6 @@ static int	builtin_unset(char *str, char ***addr_ev)
 
 int	ft_builtin(t_cmd *cmd, t_data *data)
 {
-	ft_printf("cmd->cmd={%s}\n", cmd->cmd);
-	ft_printf("cmd->flags=[%s]\n", cmd->flags);
 	if (!cmd->cmd)
 		return (0);
 	if (!ft_strncmp(cmd->cmd, "pwd", 3))
