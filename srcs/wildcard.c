@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 18:59:25 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/26 00:43:24 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 03:19:22 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,22 +119,3 @@ char	*ft_wildcard(char *wildcards)
 		temp = ft_strdup(wildcards);
 	return (temp);
 }
-// char	*ft_wildcard(char *str)
-// {
-// 	char *new;
-// 	int i;
-
-// 	i = -1;
-// 	while (str[i])
-// 	{
-// 		while (ft_isspace(str[i]))
-// 			i++;
-// 	}
-// 	return (new);
-// }
-
-/*
-ls a*t | *
-ls >a.out | a.out history.txt includes libft.a liblkriefft.a minishell srcs fichier ignore.txt libft liblkriefft Makefile objs
-
-*/

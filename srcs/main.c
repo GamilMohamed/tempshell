@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/25 19:20:40 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 03:36:56 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,16 +107,14 @@ void	pre_exec(t_data *data)
 	int		i;
 
 	// data->str = ft_expand(data->str, data->env);
-	here_doc(data, data->str);
-	tree = get_tree(data->str, data->env, data);
+	here_doc(data, data->str); // malloc
+	tree = get_tree(data->str, data->env, data); /malloc
 	ft_free((void **)&data->str);
 	if (tree)
 	{
 		temp = tree;
-		// print_tree(tree, 2);
 		exec_tree(tree, temp);
 		free_tree(tree);
-	
 	}
 	i = -1;
 	while (++i < data->nb_here)
@@ -140,38 +138,22 @@ int	exec(t_data *data)
 			continue ;
 		if (syntax(data, data->str) == 2)
 			break ;
-		if (!ft_strcmp(data->str, "echo $?"))
-		{
-			printf("%i\n", data->status);
-			continue ;
-		}
 		data->here = &here;
-		// ft_printf("BEFORE QUOTE data->str={%s}\n", data->str);
-		data->str = ft_quote(data->str);
-		// ft_printf("AFTER QUOTE data->str={%s}\n", data->str);
-		// ft_printf("before expand: str=%s\n", data->str);
-		// data->str = ft_ev_getvar(data->str, data->env);
-		// int index = ft_ev_getvarindex(data->str, data->env);
-		// int len = ft_strlen(data->str);
-		// // ft_printf("after expand: str=%s\n", ft_strchr(data->str, '=') + 1);
-		// ft_printf("after expand: str=%s\n", data->str);
-		// ft_printf("after expand: index=%i\n", index);
-		// ft_printf("after expand: lenstr=%i\n", len);
+		data->str = ft_quote(data->str); // malloc
 		pre_exec(data);
 	}
 	free_all(1, 2, &data->str, data->path, data->env);
 	ft_printf("exit\n");
-	rl_clear_history();
+	// rl_clear_history();
 	return (0);
 }
 
-int	init(t_data *data, char **env)
+void	init(t_data *data, char **env)
 {
 	ft_memset(data, 0, sizeof(t_data));
 	data->prev_pipes = -1;
 	data->env = ft_copy_tab(env);
 	ft_getenv(data->env, data);
-	return (0);
 }
 
 int	main(int ac, char **av, char **env)

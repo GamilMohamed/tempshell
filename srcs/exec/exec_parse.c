@@ -3,49 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:20:33 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/26 01:09:58 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 03:15:19 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*checkstring(t_cmd *cmd, char *str)
+static
+void	initcommand(t_cmd *cmd, char *str, int count)
 {
-	int		i;
-	int		count;
-	char	**tab;
-
-	tab = ft_split(str, ' ');
-	cmd->flags = 0;
-	cmd->redi = 0;
-	count = 0;
-	i = -1;
-	while (tab[++i])
-	{
-		if (!isaredirection(tab[i]) && !count)
-		{
-			count++;
-			cmd->cmd = ft_strdup(tab[i]);
-			cmd->flags = ft_realloc(cmd->flags, tab[i]);
-		}
-		else if (!isaredirection(tab[i]))
-			flags_wild(cmd, tab[i]);
-		else if (tab[i + 1])
-		{
-			i += ft_lstadd_back_rr(&cmd->redi, ft_lstnewrr(ft_strdup(tab[i
-							+ 1]), isaredirection(tab[i])));
-
-		}
-	}
-	ft_freetab(tab);
-	if (!cmd->cmd && !cmd->flags && !cmd->redi)
-		return (ft_printf("bash: ambiguous redirect\n"), NULL);
-	return (NULL);
+	(void)count;
+	cmd->cmd = ft_strdup(str);
+	cmd->flags = ft_realloc(cmd->flags, str);
 }
 
+static
 void	flags_wild(t_cmd *cmd, char *tab)
 {
 	char	*wild;
@@ -60,4 +35,29 @@ void	flags_wild(t_cmd *cmd, char *tab)
 	}
 	else
 		cmd->flags = ft_realloc(cmd->flags, tab);
+}
+
+char	*checkstring(t_cmd *cmd, char *str)
+{
+	int		i;
+	int		count;
+	char	**tab;
+
+	tab = ft_split(str, ' ');
+	count = 0;
+	i = -1;
+	while (tab[++i])
+	{
+		if (!isaredirection(tab[i]) && !count)
+			initcommand(cmd, tab[i], count++);
+		else if (!isaredirection(tab[i]))
+			flags_wild(cmd, tab[i]);
+		else if (tab[i + 1])
+		{
+			i += ft_lstadd_back_rr(&cmd->redi, ft_lstnewrr(ft_strdup(tab[i
+							+ 1]), isaredirection(tab[i])));
+		}
+	}
+	ft_freetab(tab);
+	return (NULL);
 }

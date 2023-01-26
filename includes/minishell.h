@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:22 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 17:34:30 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 03:14:11 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	**ft_splitex(char const *s);
 int		ft_builtin(t_cmd *cmd, t_data *data);
 // int		ft_builtin(char *s, char **env, char ***addr_env);
 // expand.c
-char	*ft_expand(char *s, char **env);
+char	*ft_expand(t_data *data, char *s);
 int		checksyntax(char *s);
 int		checkquotes(char *s);
 int		checkagain(char *temp, int len);
@@ -84,7 +84,6 @@ void	forker(t_btree *tree, t_btree *head, t_cmd *cmd, int i);
 void	forking(t_data *data, int index, int max, t_cmd *cmd);
 // exec_parse.c
 char	*checkstring(t_cmd *cmd, char *str);
-void	flags_wild(t_cmd *cmd, char *tab);
 
 // free_utils.c
 int		error_fd_bt(t_rr *node, t_data *data, t_cmd *cmd, int index);

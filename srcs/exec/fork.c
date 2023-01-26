@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:19:02 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/26 00:32:27 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 03:15:04 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,11 @@ void	ft_child(t_btree *tree, t_btree *head, t_cmd *cmd, int index)
 	exit(status);
 }
 
+// ft_printf("%i|%i|%i\n", tree->data->fd[0], tree->data->fd[1],
+// tree->data->prev_pipes);
+
 void	ft_father(t_btree *tree, t_btree *head, t_cmd *cmd)
 {
-	// ft_printf("%i|%i|%i\n", tree->data->fd[0], tree->data->fd[1], tree->data->prev_pipes);	
 	close(tree->data->fd[1]);
 	if (tree->data->prev_pipes != -1)
 		close(tree->data->prev_pipes);
