@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 03:53:52 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/24 22:24:45 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/25 10:08:27 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ t_rpn	*rpn(t_rpn *rpn, char *str)
 		return (NULL);
 	else
 	{
-		invert_quotes(str);
+		// invert_quotes(str);
 		generate_rpn(rpn, str);
 		if (rpn->current)
 			return (ft_puterror(ERROR_RPN, (char *)rpn->current->content),

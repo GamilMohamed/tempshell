@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 22:18:03 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/25 19:20:40 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,39 +35,52 @@ char	*prompt(t_data *data)
 	return (readline(prompt));
 }
 
-// char	*ft_quote(char *str)
-// {
-// 	int		i;
-// 	int		r;
-// 	int		quote;
-// 	char	*new;
-// 	char	*ret;
+char	*ft_quote(char *str)
+{
+	int		i;
+	int		r;
+	int		quote;
+	char	*new;
+	char	*ret;
 
-// 	i = 0;
-// 	r = 0;
-// 	new = malloc(ft_strlen(str) + 1);
+	i = 0;
+	r = 0;
+	new = malloc(ft_strlen(str) + 1);
+	while (str[i])
+	{
+		while (str[i] && str[i] == SQUOTE || str[i] == DQUOTE)
+		{
+			quote = str[i];
+			new[r++] = str[i++];
+			while (str[i] && str[i] != quote)
+			{
+				if (ft_strchr("\t\v\n >|&)(<", str[i]))
+					str[i] = -str[i];
+				new[r++] = str[i++];	
+			}
+			new[r++] = str[i++];
+			// i++;
+		}
+		if (!str[i])
+			break ;
+		new[r++] = str[i++];
+	}
+	new[r] = 0;
+	ret = ft_strdup(new);
+	free_all(2, 0, &new, &str);
+	return (ret);
+}
+
+// char *ft_invertquotes(char *str)
+// {
+// 	int i = 0;
 // 	while (str[i])
 // 	{
-// 		while (str[i] && str[i] == SQUOTE || str[i] == DQUOTE)
-// 		{
-// 			quote = str[i++];
-// 			// new[r++] = ' ';
-// 			while (str[i] && str[i] != quote)
-// 			{
-// 				if (ft_strchr("\t\v\n >|<", str[i]))
-// 					str[i] = -str[i];
-// 				new[r++] = str[i++];	
-// 			}
-// 			i++;
-// 		}
-// 		if (!str[i])
-// 			break ;
-// 		new[r++] = str[i++];
+// 		if (ft_strchr("\t\v\n >|&)(<", str[i]))
+// 			str[i] = -str[i];
+// 		i++;
 // 	}
-// 	new[r] = 0;
-// 	ret = ft_strdup(new);
-// 	free_all(2, 0, &new, &str);
-// 	return (ret);
+// 	return (str);
 // }
 
 int	syntax(t_data *data, char *str)
@@ -93,7 +106,7 @@ void	pre_exec(t_data *data)
 	t_btree	*temp;
 	int		i;
 
-	data->str = ft_expand(data->str, data->env);
+	// data->str = ft_expand(data->str, data->env);
 	here_doc(data, data->str);
 	tree = get_tree(data->str, data->env, data);
 	ft_free((void **)&data->str);
@@ -103,6 +116,7 @@ void	pre_exec(t_data *data)
 		// print_tree(tree, 2);
 		exec_tree(tree, temp);
 		free_tree(tree);
+	
 	}
 	i = -1;
 	while (++i < data->nb_here)
@@ -132,6 +146,17 @@ int	exec(t_data *data)
 			continue ;
 		}
 		data->here = &here;
+		// ft_printf("BEFORE QUOTE data->str={%s}\n", data->str);
+		data->str = ft_quote(data->str);
+		// ft_printf("AFTER QUOTE data->str={%s}\n", data->str);
+		// ft_printf("before expand: str=%s\n", data->str);
+		// data->str = ft_ev_getvar(data->str, data->env);
+		// int index = ft_ev_getvarindex(data->str, data->env);
+		// int len = ft_strlen(data->str);
+		// // ft_printf("after expand: str=%s\n", ft_strchr(data->str, '=') + 1);
+		// ft_printf("after expand: str=%s\n", data->str);
+		// ft_printf("after expand: index=%i\n", index);
+		// ft_printf("after expand: lenstr=%i\n", len);
 		pre_exec(data);
 	}
 	free_all(1, 2, &data->str, data->path, data->env);

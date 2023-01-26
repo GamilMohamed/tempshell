@@ -6,7 +6,7 @@ DIR_SRCS		=	srcs
 
 DIR_OBJS		=	objs
 
-SRCS_NAMES		=	main.c split.c builtin.c expand.c syntax.c wildcard.c signals.c \
+SRCS_NAMES		=	main.c split.c builtin.c newexpand.c expand.c syntax.c wildcard.c signals.c \
 				rpn/rpn_algo.c \
 				rpn/rpn_basics.c \
 				rpn/rpn_pop_utils.c \
@@ -81,10 +81,10 @@ fclean:	clean
 	rm -rf ${NAME}
 
 leaks: ${NAME}
-	valgrind --suppressions=ignore.txt -s --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all ./minishell
+	clear && valgrind --suppressions=ignore.txt -s --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all ./minishell
 
 leask: $(NAME)
-	valgrind --suppressions=ignore.txt -s --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all ./minishell
+	clear && valgrind --suppressions=ignore.txt -s --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all ./minishell
 
 
 env: $(NAME)

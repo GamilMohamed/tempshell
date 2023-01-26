@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 20:08:30 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 17:04:00 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 01:03:18 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ static int	get_pipe(t_here *here, t_data *data, char *str)
 int	openfiles_bt(t_rr *node, t_data *data, t_cmd *cmd, int index)
 {
 	int		fd;
-	t_rr	*head;
 
-	head = node;
 	while (node)
 	{
 		if (node->type == 1)

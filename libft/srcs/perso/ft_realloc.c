@@ -25,10 +25,10 @@ char	*ft_realloc(char *s1, char *s2)
 	s1len = ft_strlen(s1);
 	s2len = ft_strlen(s2);
 	temp = malloc(s1len + s2len + 1);
-	ft_strcpy(temp, s1);
-	ft_strcpy(temp + s1len, s2);
 	if (!temp)
 		return (NULL);
+	ft_strcpy(temp, s1);
+	ft_strcpy(temp + s1len, s2);
 	ft_free((void **)& s1);
 	return (temp);
 }

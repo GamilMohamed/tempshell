@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 17:11:13 by mohazerr          #+#    #+#             */
-/*   Updated: 2023/01/24 03:57:01 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/25 10:09:05 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,8 +215,6 @@ void	ft_invert(char **tab)
 		}
 
 	}
-
-
 }
 
 char	*ft_print(char *str)
@@ -236,8 +234,8 @@ char	*ft_print(char *str)
 			quote = str[i++];
 			while (str[i] && str[i] != quote)
 			{
-				if (ft_strchr("\t\v\n ", str[i]))
-					str[i] = -str[i];
+				// if (ft_strchr("\t\v\n ", str[i]))
+				// 	str[i] = -str[i];
 				new[r++] = str[i++];
 			}
 			i++;

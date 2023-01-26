@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:19:02 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 22:35:10 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 00:32:27 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	ft_child(t_btree *tree, t_btree *head, t_cmd *cmd, int index)
 
 	signal(SIGINT, &ctrlc);
 	signal(SIGQUIT, &antislash);
-	// ft_printf("test\n");
 	forking(tree->data, index, tree->data->nbcmd, cmd);
 	ft_errorcmd(tree->data, cmd, cmd->redi, "");
 	freestruct(tree->data);

@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/24 21:30:58 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 01:10:12 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	exec_builtin(t_cmd *cmd, t_data *data)
 	}
 	ft_builtin(cmd, data);
 	dup2(copyfd, STDOUT_FILENO);
-	free_all(1, 0, &cmd->cmd, data->split);
+	// free_all(1, 0, &cmd->cmd, data->split);
 	ft_freerr(cmd->redi);
 	// close(data->fd[0]);
 	close(data->fd[1]);
@@ -71,16 +71,18 @@ int	exec_command(t_btree *tree, t_btree *head)
 	char	*temp;
 	int		status;
 
-	temp = ft_expand(tree->node, tree->data->env);
 	ft_bzero(&cmd, sizeof(t_cmd));
+	temp = ft_expand(tree->data, tree->node);
 	tree->data->split = ft_split(temp, '|');
 	tree->data->nbcmd = ft_countdelim(temp, '|');
+	// ft_printtab(tree->data->split);
 	free(temp);
 	i = -1;
 	while (++i < tree->data->nbcmd)
 		forker(tree, head, &cmd, i);
-	free_all(1, 1, &cmd.flags, tree->data->split);
-	close(tree->data->fd[0]);
+	free_all(2, 1, &cmd.cmd, &cmd.flags, tree->data->split);
+	if (tree->data->nbcmd)
+		close(tree->data->fd[0]);
 	exec_waitpid(tree->data);
 	signal(SIGINT, &ctrlc);
 	return (0);

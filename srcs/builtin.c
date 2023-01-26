@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 16:58:09 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 00:55:23 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ static int	builtin_echo(char *s, char **env)
 	int		i;
 	int		opt;
 
-	i = 0;
 	opt = 0;
 	tab = ft_split(s, ' '); // check malloc
 	i = builtin_echo_opt(tab, &opt);
