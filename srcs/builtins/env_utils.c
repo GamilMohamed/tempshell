@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 05:02:23 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/26 01:05:44 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 15:40:16 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,6 @@
 
 #include "minishell.h"
 
-int	ft_tablen(char **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab[i])
-		i++;
-	return (i);
-}
-
 char	**ft_copy_tab(char **tab)
 {
 	int		i;
@@ -41,14 +31,14 @@ char	**ft_copy_tab(char **tab)
 	i = ft_tablen(tab);
 	new_tab = malloc(sizeof(*new_tab) * (i + 1));
 	if (!new_tab)
-		return (ft_puterror(FAILED_MALLOC, NULL));
+		return (ft_puterror(FAILED_MALLOC, (char *)__func__));
 	i = -1;
 	while (tab[++i])
 	{
 		new_tab[i] = ft_strdup(tab[i]);
 		if (new_tab[i] == NULL)
 		{
-			ft_puterror(FAILED_MALLOC, NULL);
+			ft_puterror(FAILED_MALLOC, (char *)__func__);
 			return (ft_free_tab(new_tab, i));
 		}
 	}
@@ -74,7 +64,7 @@ char	**regenerate_ev(int len, int index, char **ev)
 		return (NULL);
 	my_ev = malloc(sizeof(*my_ev) * (len + 1));
 	if (!my_ev)
-		return (ft_puterror(FAILED_MALLOC, NULL));
+		return (ft_puterror(FAILED_MALLOC, (char *)__func__));
 	trgr = 0;
 	i = -1;
 	while (++i < len)
@@ -85,7 +75,10 @@ char	**regenerate_ev(int len, int index, char **ev)
 		else
 			my_ev[i] = ft_strdup("");
 		if (my_ev[i] == NULL)
-			return (ft_puterror(FAILED_MALLOC, NULL), ft_free_tab(my_ev, i));
+		{
+			ft_puterror(FAILED_MALLOC, (char *)__func__);
+			return (ft_free_tab(my_ev, i));
+		}
 	}
 	return (my_ev[len] = NULL, ft_free_tab(ev, -1), my_ev);
 }
@@ -101,8 +94,9 @@ int	ft_ev_getvarindex(char *var, char **ev)
 	i = 0;
 	while (ev[i])
 	{
-		if ((!ft_strcmp(var, ev[i])) || !ft_strncmp(var, ev[i], len) && !ft_strncmp("=", ev[i] + len, 1))
-			break;
+		if ((!ft_strcmp(var, ev[i])) || !ft_strncmp(var, ev[i], len)
+			&& !ft_strncmp("=", ev[i] + len, 1))
+			break ;
 		i++;
 	}
 	if (ev[i])
@@ -122,8 +116,9 @@ char	*ft_ev_getvar(char *var, char **ev)
 	i = 0;
 	while (ev[i])
 	{
-		if ((!ft_strcmp(var, ev[i])) || (!ft_strncmp(var, ev[i], len) && !ft_strncmp("=", ev[i] + len, 1)))
-			break;
+		if ((!ft_strcmp(var, ev[i])) || (!ft_strncmp(var, ev[i], len)
+				&& !ft_strncmp("=", ev[i] + len, 1)))
+			break ;
 		i++;
 	}
 	if (ev[i])
@@ -151,10 +146,10 @@ char	*ft_ev_setvar(char *var_name, char *str, char ***addr_ev)
 	else
 		tmp = ft_strjoin_lkrief(var_name, "=");
 	if (!tmp)
-		return (ft_puterror(FAILED_MALLOC, NULL));
+		return (ft_puterror(FAILED_MALLOC, (char *)__func__));
 	(*addr_ev)[n] = ft_strjoin_lkrief(tmp, str);
 	if (!(*addr_ev)[n])
-		ft_puterror(FAILED_MALLOC, NULL);
+		ft_puterror(FAILED_MALLOC, (char *)__func__);
 	free(tmp);
 	return ((*addr_ev)[n]);
 }

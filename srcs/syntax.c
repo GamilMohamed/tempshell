@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 00:14:05 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 17:49:33 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/27 13:27:10 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ int	checkquotes(char *s)
 
 	quote = 0;
 	i = 0;
-	if (!s)
-		return (0);
 	while (s[i])
 	{
 		while (s[i] && s[i] != SQUOTE && s[i] != DQUOTE)
@@ -101,5 +99,22 @@ int	isaredirection(char *s)
 		return (3);
 	else if (!ft_strcmp(s, "<<"))
 		return (4);
+	return (0);
+}
+
+int	syntax(t_data *data, char *str)
+{
+	if (!*str)
+		return (1);
+	if (checksyntax(str) || checkquotes(str) || !parsing(str))
+	{
+		data->status = 2;
+		return (1);
+	}
+	if (!ft_strcmp(str, "exit"))
+	{
+		data->status = 0;
+		return (2);
+	}
 	return (0);
 }

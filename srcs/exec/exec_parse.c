@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_parse.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:20:33 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/26 03:15:19 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/26 16:28:49 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ char	*checkstring(t_cmd *cmd, char *str)
 	char	**tab;
 
 	tab = ft_split(str, ' ');
+	cmd->redi = 0;
 	count = 0;
 	i = -1;
 	while (tab[++i])

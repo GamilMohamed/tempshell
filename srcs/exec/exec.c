@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/26 03:43:47 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/27 14:13:08 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "minitrees.h"
 
 void	execute(t_data *data, t_cmd *cmd, int boolean)
 {
@@ -42,28 +41,23 @@ void	execute(t_data *data, t_cmd *cmd, int boolean)
 
 int	exec_builtin(t_cmd *cmd, t_data *data)
 {
-	int	copyfd;
-
 	if (!matching(cmd->cmd))
 		return (0);
-	copyfd = dup(STDOUT_FILENO);
+	data->copyfd = dup(STDOUT_FILENO);
 	if (openfiles_bt(cmd->redi, data, cmd, 0))
 	{
-		dup2(copyfd, STDOUT_FILENO);
-		close(copyfd);
+		dup2(data->copyfd, STDOUT_FILENO);
+		close(data->copyfd);
 		return (1);
 	}
-	ft_builtin(cmd, data);
-	dup2(copyfd, STDOUT_FILENO);
+	data->status = ft_builtin(cmd, data);
+	dup2(data->copyfd, STDOUT_FILENO);
 	ft_freerr(cmd->redi);
 	close(data->fd[1]);
-	close(copyfd);
+	close(data->copyfd);
 	return (1);
 }
-	// free_all(1, 0, &cmd->cmd, data->split);
 
-	// close(data->fd[0]);
-	// ft_printtab(tree->data->split);
 int	exec_command(t_btree *tree, t_btree *head)
 {
 	int		i;
@@ -73,8 +67,8 @@ int	exec_command(t_btree *tree, t_btree *head)
 	int		status;
 
 	ft_bzero(&cmd, sizeof(t_cmd));
-	temp = ft_expand(tree->data, tree->node); // malloc
-	tree->data->split = ft_split(temp, '|'); // malloc
+	temp = ft_expand(tree->data, tree->node);
+	tree->data->split = ft_split(temp, '|');
 	tree->data->nbcmd = ft_countdelim(temp, '|');
 	free(temp);
 	i = -1;

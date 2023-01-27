@@ -6,12 +6,12 @@ DIR_SRCS		=	srcs
 
 DIR_OBJS		=	objs
 
-SRCS_NAMES		=	main.c split.c builtin.c newexpand.c expand.c syntax.c wildcard.c signals.c \
+SRCS_NAMES		=	main.c builtin.c newexpand.c builtin_2.c expand.c syntax.c wildcard.c signals.c \
 				rpn/rpn_algo.c \
 				rpn/rpn_basics.c \
 				rpn/rpn_pop_utils.c \
 				rpn/rpn_utils.c rpn/rpn_algo_bis.c \
-				parsing/is_something.c	parsing/parsing.c  parsing/parsing_utils.c\
+				parsing/is_something.c	parsing/parsing.c  parsing/parsing_utils.c parsing/quote.c\
 				trees/make_tree.c \
 				trees/trees.c \
 				trees/print_tree/print_trees.c \
@@ -20,8 +20,9 @@ SRCS_NAMES		=	main.c split.c builtin.c newexpand.c expand.c syntax.c wildcard.c 
 				exec/exec_parse.c exec/fork.c \
 				exec/files.c exec/free_all.c \
 				builtins/cd.c  \
-				builtins/env_utils.c \
+				builtins/env_utils.c builtins/env_utils2.c \
 				builtins/export.c \
+				builtins/exit.c \
 				error_handler/error.c \
 				builtins/unset.c \
 				here_doc/here_doc.c here_doc/utils.c

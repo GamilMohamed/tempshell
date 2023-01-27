@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/01 16:07:08 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/14 07:50:47 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/27 11:14:28 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,5 +18,5 @@ void	ft_printtab(char **tab)
 
 	i = -1;
 	while (tab[++i])
-		ft_printf("[%i]=%s\n", i, tab[i]);
+		ft_printf("[%i]={%s}\n", i, tab[i]);
 }

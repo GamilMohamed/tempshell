@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:22 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/26 03:14:11 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/27 14:53:00 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ struct	dirent
 // split.c
 char	**ft_splitex(char const *s);
 // builtin.c
+int	builtin_exit(t_data *data, t_cmd *cmd, char *str);
+int	ft_exit(t_data *data, t_cmd *cmd, char **tab);
 int		ft_builtin(t_cmd *cmd, t_data *data);
 // int		ft_builtin(char *s, char **env, char ***addr_env);
 // expand.c
@@ -69,7 +71,6 @@ int		ft_lstadd_back_rr(t_rr **lst, t_rr *var);
 t_rr	*ft_lstnewrr(char *content, int type);
 void	ft_printlist(t_rr *temp);
 char	*ft_wildcard(char *wildcards);
-char	*builtin_pwd(char *s);
 void	*ft_puterror(int flag, void *param);
 // exec
 int		exec_tree(t_btree *tree, t_btree *head);
@@ -120,6 +121,21 @@ int		count_hd(char *str);
 void	antislash(int sig);
 t_data	*starton(void);
 void	ctrlc(int sig);
+int	syntax(t_data *data, char *str);
+char	*ft_quote(char *str);
+
+int	builtin_env(char *str, char **env);
+char	*builtin_echo_expand(char *str, char **env);
+int	builtin_echo_opt(char **tab, int *opt);
+int	builtin_echo(char *s, char **env);
+char	*builtin_pwd(char *s);
+// char	*builtin_pwd(char *s, char **env);
+
+int	lenof(int n);
+void	ft_stoval(t_data *data, int n);
+char	*dostatus(t_data *data, int *n, int *index);
+char	*ft_boost(char *s1, char *s2, int size);
+
 
 // signal.c
 void	antislash(int sig);

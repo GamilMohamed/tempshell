@@ -11,11 +11,16 @@
 # include <sys/time.h>
 # include <unistd.h>
 
+
 # define FAILED_MALLOC			0b00000000000000000000001
 
 # define ERROR_EXPRESSION		0b00000000000000000000010
 # define ERROR_RPN				0b00000000000000000000100
 # define ERROR_RPN_PARSING		0b00000000000000000001000
+# define ERROR_CD_BUILTIN		0b00000000000000000010000
+# define ENV_NOT_SET_CD_BUILTIN	0b00000000000000000100000
+# define ERROR_EXPORT_BUILTIN	0b00000000000000001000000
+
 # define ERROR_NULL				0b10000000000000000000000
 
 # define OPENED_PRTHS '('
@@ -55,9 +60,11 @@ typedef struct s_data
 	char				**split;
 	int					fd[2];
 	int					status;
+	char				value[1024];
 	int					tty;
 	int					nbcmd;
 	int					nb_here;
+	int					copyfd;
 	char				*str;
 	t_here				*here;
 }						t_data;

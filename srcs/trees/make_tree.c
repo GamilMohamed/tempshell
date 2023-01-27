@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:54:00 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/24 06:06:41 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/27 13:30:23 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,7 @@ t_btree	*get_tree(char *str, char **env, t_data *data)
 	t_btree	*tree;
 	t_list	*list;
 
-	// if (!ft_getenv(env, data))
 	(void) env;
-	// 	return (NULL);
 	if (!rpn(&rpn_var, str))
 		return (NULL);
 	list = get_tree_treatment(str, rpn_var, data);

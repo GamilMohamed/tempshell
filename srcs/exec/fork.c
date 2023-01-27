@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgamil <mgamil@42.student.fr>              +#+  +:+       +#+        */
+/*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 17:19:02 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/26 03:15:04 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/27 13:29:46 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,9 @@ void	ft_child(t_btree *tree, t_btree *head, t_cmd *cmd, int index)
 	ft_errorcmd(tree->data, cmd, cmd->redi, "");
 	freestruct(tree->data);
 	status = tree->data->status;
+	free_tree(head);
 	exit(status);
 }
-
-// ft_printf("%i|%i|%i\n", tree->data->fd[0], tree->data->fd[1],
-// tree->data->prev_pipes);
 
 void	ft_father(t_btree *tree, t_btree *head, t_cmd *cmd)
 {
@@ -47,6 +45,21 @@ void	ft_father(t_btree *tree, t_btree *head, t_cmd *cmd)
 	free_all(2, 0, &cmd->cmd, &cmd->flags);
 	ft_freerr(cmd->redi);
 	signal(SIGQUIT, SIG_IGN);
+}
+
+void	forking(t_data *data, int index, int max, t_cmd *cmd)
+{
+	if (index != max - 1)
+		dup2(data->fd[1], STDOUT_FILENO);
+	if (index != 0)
+		dupnclose(data->prev_pipes, STDIN_FILENO);
+	openfiles(cmd->redi, data, cmd, index);
+	close(data->fd[1]);
+	close(data->fd[0]);
+	if (matching(cmd->cmd))
+		ft_builtin(cmd, data);
+	else if (cmd->cmd)
+		execute(data, cmd, !(ft_strchr(cmd->cmd, '/')));
 }
 
 void	forker(t_btree *tree, t_btree *head, t_cmd *cmd, int i)
@@ -63,19 +76,4 @@ void	forker(t_btree *tree, t_btree *head, t_cmd *cmd, int i)
 		ft_child(tree, head, cmd, i);
 	else if (tree->data->pid[i] > 0)
 		ft_father(tree, head, cmd);
-}
-
-void	forking(t_data *data, int index, int max, t_cmd *cmd)
-{
-	if (index != max - 1)
-		dup2(data->fd[1], STDOUT_FILENO);
-	if (index != 0)
-		dupnclose(data->prev_pipes, STDIN_FILENO);
-	openfiles(cmd->redi, data, cmd, index);
-	close(data->fd[1]);
-	close(data->fd[0]);
-	if (matching(cmd->cmd))
-		ft_builtin(cmd, data);
-	else if (cmd->cmd)
-		execute(data, cmd, !(ft_strchr(cmd->cmd, '/')));
 }

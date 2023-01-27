@@ -6,42 +6,11 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 12:11:53 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/26 01:22:37 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/27 13:45:14 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static char	*dostatus(t_data *data, int *n, int *index)
-{
-	char	*status;
-
-	status = ft_itoa(data->status);
-	*n += ft_strlen(status);
-	*index += 1;
-	return (status);
-}
-
-static char	*ft_boost(char *s1, char *s2, int size)
-{
-	char	*temp;
-	size_t	s1len;
-	size_t	s2len;
-
-	if (!s2)
-		return (s1);
-	if (!s1)
-		return (ft_strdup(s2));
-	s1len = ft_strlen(s1);
-	s2len = ft_strlen(s2);
-	temp = malloc(s1len + s2len + size + 1);
-	if (!temp)
-		return (NULL);
-	ft_strcpy(temp, s1);
-	ft_strcpy(temp + s1len, s2);
-	ft_free((void **)& s1);
-	return (temp);
-}
 
 static char	*getvar(t_data *data, char *str, int *n, int *index)
 {
@@ -51,9 +20,11 @@ static char	*getvar(t_data *data, char *str, int *n, int *index)
 	int		keylen;
 
 	i = 1;
-	if (!ft_isalnum(str[0]) && str[0] != '_' && str[0] != '?')
+	if (ft_isdigit(str[0]))
+		return ((*index)++, "");
+	if (!ft_isalpha(str[0]) && str[0] != '_' && str[0] != '?')
 		return ((*n)++, "$");
-	while (str[i] && (ft_isalpha(str[i]) || str[i] == '_' || str[i] == '?'))
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
 		i++;
 	c = str[i];
 	str[i] = '\0';
@@ -69,11 +40,33 @@ static char	*getvar(t_data *data, char *str, int *n, int *index)
 	return (value + keylen + 1);
 }
 
-static char	neg(char c)
+static void	singlequote(char *new, char *s, int *i, int *n)
 {
-	if (c == DQUOTE)
-		return (-c);
-	return (c);
+	(*i)++;
+	while (s[*i] && s[*i] != SQUOTE)
+		new[(*n)++] = s[(*i)++];
+	(*i)++;
+}
+
+static int	doublequote(char **tab[2], int *i, int *n, t_data *data)
+{
+	(*i)++;
+	while ((*tab)[1][*i] && (*tab)[1][*i] != DQUOTE)
+	{
+		while ((*tab)[1][*i] && (*tab)[1][*i] == '$')
+		{
+			(*tab)[0][*n] = '\0';
+			(*i)++;
+			(*tab)[0] = ft_boost((*tab)[0], getvar(data, &(*tab)[1][*i], n, i),
+					ft_strlen(&(*tab)[1][*i]));
+		}
+		if ((*tab)[1][*i] && (*tab)[1][*i] != DQUOTE)
+			(*tab)[0][(*n)++] = (*tab)[1][(*i)++];
+	}
+	if ((*tab)[1][*i] == '\0')
+		return (1);
+	(*i)++;
+	return (0);
 }
 
 char	*ft_expand(t_data *data, char *s)
@@ -84,25 +77,23 @@ char	*ft_expand(t_data *data, char *s)
 
 	n = 0;
 	i = 0;
-	new = malloc(ft_strlen(s) + 1);
+	new = ft_calloc(ft_strlen(s) + 1, 1);
+	if (!new)
+		return (ft_puterror(FAILED_MALLOC, "ft_expand"));
 	while (s[i])
 	{
 		if (s[i] && s[i] == SQUOTE)
-		{
-			while (s[++i] && s[i] != SQUOTE)
-				new[n++] = neg(s[i]);
-			i++;
-		}
+			singlequote(new, s, &i, &n);
+		if (s[i] && s[i] == DQUOTE)
+			if (doublequote((char **[2]){&new, &s}, &i, &n, data))
+				break ;
 		while (s[i] && s[i] == '$')
 		{
-			new[n] = '\0';
 			i++;
 			new = ft_boost(new, getvar(data, &s[i], &n, &i), ft_strlen(&s[i]));
 		}
-		if (s[i] == '\0')
-			break ;
-		new[n++] = s[i++];
+		if (s[i])
+			new[n++] = s[i++];
 	}
-	new[n] = 0;
 	return (new);
 }
