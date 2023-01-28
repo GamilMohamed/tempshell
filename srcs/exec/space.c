@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 20:44:09 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 17:17:21 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 00:43:12 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	ft_spacestrlen(char *str)
 	int	forward;
 
 	len = 0;
-	while (*str)
+	while (str && *str)
 	{
 		forward = str_isredirection(str);
 		if (forward > 0)
@@ -100,7 +100,7 @@ char	*ft_spacestr(char *str)
 	cpy = str;
 	if (!cpy)
 		return (NULL);
-	newstr = malloc(sizeof(*newstr) * (ft_spacestrlen(cpy) + 1));
+	newstr = ft_calloc(sizeof(*newstr) * (ft_spacestrlen(cpy) + 1), 1);
 	if (newstr == NULL)
 		return (ft_puterror(FAILED_MALLOC, NULL), NULL);
 	i = 0;

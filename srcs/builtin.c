@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/28 13:37:24 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/27 14:53:02 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 01:21:04 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@ static int	builtin_cd(char *str, char ***addr_ev)
 	int		success;
 	char	**tab;
 	int		i;
+	int		size;
 
 	i = -1;
 	success = -1;
 	if (str)
 	{
-		tab = ft_split(str + 2, ' ');
+		tab = ft_split(str + 2, SPACES, &size);
 		if (!tab)
 			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		while (tab[++i])
@@ -38,12 +39,13 @@ static int	builtin_export(char *str, char ***addr_ev)
 	int		success;
 	char	**tab;
 	int		i;
+	int		size;
 
 	i = -1;
 	success = -1;
 	if (str)
 	{
-		tab = ft_split(str + 6, ' ');
+		tab = ft_split(str + 6, SPACES, &size);
 		if (!tab)
 			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		while (tab[++i])
@@ -59,11 +61,12 @@ static int	builtin_unset(char *str, char ***addr_ev)
 	int		success;
 	char	**tab;
 	int		i;
+	int		size;
 
 	success = -1;
 	if (str)
 	{
-		tab = ft_split(str + 6, ' ');
+		tab = ft_split(str + 6, SPACES, &size);
 		if (!tab)
 			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		i = -1;
@@ -80,11 +83,12 @@ int	builtin_exit(t_data *data, t_cmd *cmd, char *str)
 	int		success;
 	char	**tab;
 	int		i;
+	int		size;
 
 	success = -1;
 	if (str)
 	{
-		tab = ft_split(str + 4, ' ');
+		tab = ft_split(str + 4, SPACES, &size);
 		if (!tab)
 			return (ft_puterror(FAILED_MALLOC, NULL), -1);
 		i = -1;

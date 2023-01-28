@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 03:53:43 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/27 14:59:05 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 01:35:10 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ char	*prompt(t_data *data)
 	int		count;
 
 	str = ft_strxdup(ft_ev_getvar("PWD", data->env));
-	tab = ft_split(str, '/');
-	count = ft_countdelim(str, '/');
+	tab = ft_split(str, "/", & count);
 	if (data->status)
 		ft_strcpy(prompt, RED);
 	else
@@ -96,7 +95,6 @@ int	exec(t_data *data)
 		if (syntax(data, data->str) == 2)
 			break ;
 		data->here = &here;
-		data->str = ft_quote(data->str);
 		pre_exec(data);
 	}
 	free_all(1, 2, &data->str, data->path, data->env);

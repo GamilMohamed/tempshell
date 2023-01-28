@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:54:00 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/27 13:30:23 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 01:28:02 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 char	**ft_getenv(char **envp, t_data *data)
 {
 	int	i;
+	int	size;
 
 	i = -1;
 	while (envp[++i])
 	{
 		if (!ft_strncmp(envp[i], "PATH=", 5))
 		{
-			data->path = ft_split(envp[i] + 5, ':');
+			data->path = ft_split(envp[i] + 5, ":", & size);
 			if (!data->path)
 				return (ft_puterror(FAILED_MALLOC, (char *)"ft_getenv"));
 			return (NULL);

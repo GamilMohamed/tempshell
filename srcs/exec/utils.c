@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 10:21:21 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/24 22:34:10 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 01:49:10 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,15 @@ char	*invert(char *str)
 
 	i = -1;
 	while (str[++i])
+	{
 		if (str[i] < 0)
 			str[i] = -str[i];
+	}
+	i = -1;
+	while (str[++i])
+	{
+		if (str[i] == 6)
+			str[i] = '\0';
+	}
 	return (str);
 }

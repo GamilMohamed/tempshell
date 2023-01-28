@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 01:25:57 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/27 14:13:08 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 02:05:07 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@ void	execute(t_data *data, t_cmd *cmd, int boolean)
 
 	i = -1;
 	data->status = 0;
-	tab = ft_split(cmd->flags, ' ');
+	tab = ft_split(cmd->flags, SPACES, & count);
 	while (tab[++i])
 		tab[i] = invert(tab[i]);
 	i = -1;
 	cmd->cmd = invert(cmd->cmd);
+	cmd->cmd = ft_quote(cmd->cmd);
 	while (boolean && data->path && data->path[++i])
 	{
 		temp = ft_slash(data->path[i], cmd->cmd);
@@ -58,6 +59,32 @@ int	exec_builtin(t_cmd *cmd, t_data *data)
 	return (1);
 }
 
+
+void	ft_invertspaces(char *str)
+{
+	int i = 0;
+	int quote = 0;
+
+	while (str[i])
+	{
+		while (str[i] && (str[i] == SQUOTE || str[i] == DQUOTE))
+		{
+			quote = str[i++];
+			while (str[i] && str[i] != quote)
+			{
+				if (ft_strchr("\t\v\n >|&)(<", str[i]))
+					str[i] = -str[i];
+				if (!str[i++])
+					break ;
+			}
+			if (!str[i++])
+				break ;
+		}
+		if (!str[i++])
+			break ;
+	}
+}
+
 int	exec_command(t_btree *tree, t_btree *head)
 {
 	int		i;
@@ -67,9 +94,14 @@ int	exec_command(t_btree *tree, t_btree *head)
 	int		status;
 
 	ft_bzero(&cmd, sizeof(t_cmd));
+	ft_printf("START temp=%s\n", tree->node);
 	temp = ft_expand(tree->data, tree->node);
-	tree->data->split = ft_split(temp, '|');
-	tree->data->nbcmd = ft_countdelim(temp, '|');
+	ft_printf("EXPAND temp=%s\n", temp);
+	ft_printf("INVERT SPACES temp=%s\n", temp);
+	ft_invertspaces(temp);
+	ft_printf("QUOTE temp=%s\n", temp);
+	temp = ft_quote(temp);
+	tree->data->split = ft_split(temp, "|", & tree->data->nbcmd);
 	free(temp);
 	i = -1;
 	while (++i < tree->data->nbcmd)

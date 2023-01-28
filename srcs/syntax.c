@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 00:14:05 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/27 13:27:10 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 02:16:11 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,30 @@
 
 int	checksyntax(char *s)
 {
-	char	**tab;
-	int		len;
-	char	*temp;
-	int		i;
+	// char	**tab;
+	// int		len;
+	// char	*temp;
+	// int		i;
 
-	temp = ft_strtrim(s, " ");
-	len = ft_strlen(temp);
-	if (!len)
-		return (free(temp), free(s), 1);
-	i = -1;
-	while (METACHAR[++i])
-		if (METACHAR[i] == temp[len - 1])
-			return (free(temp), free(s),
-				ft_printf("bash: syntax error near unexpected token '%c'!\n",
-					METACHAR[i]));
-	i = 1;
-	while (METACHAR[++i])
-		if (METACHAR[i] == temp[0])
-			return (free(temp), free(s),
-				ft_printf("bash: syntax error near unexpected token '%c'!\n",
-					METACHAR[i]));
-	if (checkagain(temp, len))
-		return (free(s), 1);
-	free(temp);
+	// temp = ft_strtrim(s, " ");
+	// len = ft_strlen(temp);
+	// if (!len)
+	// 	return (free(temp), free(s), 1);
+	// i = -1;
+	// while (METACHAR[++i])
+	// 	if (METACHAR[i] == temp[len - 1])
+	// 		return (free(temp), free(s),
+	// 			ft_printf("bash: syntax error near unexpected token '%c'!\n",
+	// 				METACHAR[i]));
+	// i = 1;
+	// while (METACHAR[++i])
+	// 	if (METACHAR[i] == temp[0])
+	// 		return (free(temp), free(s),
+	// 			ft_printf("bash: syntax error near unexpected token '%c'!\n",
+	// 				METACHAR[i]));
+	// if (checkagain(temp, len))
+	// 	return (free(s), 1);
+	// free(temp);
 	return (0);
 }
 
@@ -73,19 +73,19 @@ int	checkquotes(char *s)
 
 int	checkagain(char *temp, int len)
 {
-	int	i;
-	int	j;
+	// int	i;
+	// int	j;
 
-	i = 2;
-	while (METACHAR[++i])
-	{
-		j = -1;
-		while (temp[++j])
-			if (temp[j] == METACHAR[i])
-				return (free(temp),
-					printf("bash: syntax error near unexpected token '%c'\n",
-						METACHAR[i]));
-	}
+	// i = 2;
+	// while (METACHAR[++i])
+	// {
+	// 	j = -1;
+	// 	while (temp[++j])
+	// 		if (temp[j] == METACHAR[i])
+	// 			return (free(temp),
+	// 				printf("bash: syntax error near unexpected token '%c'\n",
+	// 					METACHAR[i]));
+	// }
 	return (0);
 }
 

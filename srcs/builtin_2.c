@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 13:23:45 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/27 14:52:48 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 01:21:04 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,11 @@ int	builtin_echo(char *s, char **env)
 	int		i;
 	int		opt;
 	int		r;
+	int		size;
 
 	r = -1;
 	opt = 0;
-	tab = ft_split(s, ' ');
+	tab = ft_split(s, SPACES, & size);
 	while (tab[++r])
 		tab[r] = invert(tab[r]);
 	i = builtin_echo_opt(tab, &opt);

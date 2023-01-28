@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 21:25:30 by mgamil            #+#    #+#             */
-/*   Updated: 2023/01/19 04:06:50 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 01:24:17 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int		ft_isspace(int c);
 // char				*ft_realloc(char *s1, char const *s2);
 void	ft_printtab(char **tab);
 char	*ft_strcat(char *dest, char *src);
-int		ft_countdelim(char const *str, char c);
+int		ft_countdelim(char const *str, char *charset);
+// int		ft_countdelim(char const *str, char c);
 
 /*	IS/				*/
 int		ft_isalnum(int c);
@@ -60,7 +61,8 @@ char	*ft_strnstr(char const *haystack, char const *needle, size_t len);
 char	*ft_strtrim(char const *s, char const *set);
 char	*ft_strdup(const char *s1);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	**ft_split(char const *s, char c);
+char	**ft_split(char const *s, char *charset, int *size);
+// char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
 /*	PUT/			*/
 // void				ft_putchar_fd(char c, int fd);

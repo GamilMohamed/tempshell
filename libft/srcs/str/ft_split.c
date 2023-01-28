@@ -6,7 +6,7 @@
 /*   By: mgamil <mgamil@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/03 17:11:13 by mohazerr          #+#    #+#             */
-/*   Updated: 2023/01/14 10:33:47 by mgamil           ###   ########.fr       */
+/*   Updated: 2023/01/28 01:33:07 by mgamil           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,21 @@ void	freeloop(char **tab)
 	free(tab);
 }
 
-int	ft_countdelim(char const *str, char c)
+int	ft_countdelim(char const *str, char *charset)
 {
 	int	i;
 	int	counter;
 
 	i = 0;
 	counter = 0;
-	while (str[i])
+	while (str && str[i])
 	{
-		while (str[i] && str[i] == c)
+		while (str[i] && ft_strchr(charset, str[i]))
 			i++;
 		if (str[i] == '\0')
 			break ;
 		counter++;
-		while (str[i] && str[i] != c)
+		while (str[i] && !ft_strchr(charset, str[i]))
 			i++;
 	}
 	return (counter);
@@ -63,7 +63,7 @@ char	*ft_strtsub(char const *str, int start, int end)
 	return (var);
 }
 
-char	**to_tab(char **tab, char const *s, char c, int count)
+char	**to_tab(char **tab, char const *s, char *charset, int count)
 {
 	int	i;
 	int	index;
@@ -73,10 +73,10 @@ char	**to_tab(char **tab, char const *s, char c, int count)
 	index = 0;
 	while (index < count)
 	{
-		while (s[i] && s[i] == c)
+		while (s[i] && ft_strchr(charset, s[i]))
 			i++;
 		start = i;
-		while (s[i] && (s[i] != c))
+		while (s[i] && (!ft_strchr(charset, s[i])))
 			i++;
 		tab[index] = ft_strtsub(s, start, i);
 		if (!tab[index])
@@ -89,18 +89,17 @@ char	**to_tab(char **tab, char const *s, char c, int count)
 	return (tab);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char const *s, char *charset, int *size)
 {
-	int		nb;
 	char	**tab;
 
-	if (s == 0)
-		return (NULL);
-	nb = ft_countdelim(s, c);
-	tab = malloc(sizeof(char *) * (nb + 1));
+	if (!s || !*s)
+		return (ft_calloc(sizeof(char *) * 1, 1));
+	*size = ft_countdelim(s, charset);
+	tab = ft_calloc(sizeof(char *) * (*size + 1), 1);
 	if (!tab)
 		return (NULL);
-	tab = to_tab(tab, s, c, nb);
-	*(tab + nb) = NULL;
+	tab = to_tab(tab, s, charset, *size);
+	*(tab + *size) = NULL;
 	return (tab);
 }
